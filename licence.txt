@@ -1,0 +1,1 @@
+Each plugin is released with its own licencing. Please view the licence.txt contained alongside each plugin source.
