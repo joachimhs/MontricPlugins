@@ -106,13 +106,13 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
     		
     		//If this is the first hour, start from the correct 15-second timeslot within the hour
     		Integer minTimeperiodWithinTheHour = 0;
-    		if (index == fromHoursSince1970) {
+    		if (index.longValue() == fromHoursSince1970.longValue()) {
     			minTimeperiodWithinTheHour = getFifteensecondTimeperiodsSinceStartOfHour(minTimeperiod * 15);
     		}
     		
     		//If this is the last hour, end with the correct 15-second timeslot within the hour
     		Integer maxTimeperiodWithinTheHour = null;
-    		if (index == toHoursSince1970) {
+    		if (index.longValue() == toHoursSince1970.longValue()) {
     			maxTimeperiodWithinTheHour = getFifteensecondTimeperiodsSinceStartOfHour(maxTimeperiod * 15);
     		}
     		
