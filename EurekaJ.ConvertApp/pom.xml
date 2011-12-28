@@ -9,7 +9,7 @@
     <parent>
         <artifactId>eurekaj.plugin.parent</artifactId>
         <groupId>org.eurekaJ.plugins</groupId>
-        <version>1.0.4</version>
+        <version>1.0.5-SNAPSHOT</version>
     </parent>
     <build>
 
@@ -76,6 +76,11 @@
 		<dependency>
             <groupId>org.eurekaJ.plugin</groupId>
             <artifactId>berkeleyHourPlugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eurekaJ.plugin</groupId>
+            <artifactId>cassandraPlugin</artifactId>
             <version>${project.version}</version>
         </dependency>
 	</dependencies>

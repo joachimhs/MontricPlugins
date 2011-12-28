@@ -55,21 +55,12 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
         metricHourTimeperiodIdx = this.dbEnvironment.getMetricHourStore().getSecondaryIndex(metricHourPrimaryIdx, Long.class, "hoursSince1970");
     }
     
-    public static int getFifteensecondTimeperiodsSinceStartOfHour(Long secondsSince1970) {
-    	int hoursSince1970 = secondsSince1970.intValue() / 3600;
-    	
-    	int secondsFromStartOfHour = secondsSince1970.intValue() - (hoursSince1970 * 3600);
-    	int fifteensecondTimeperiodsSinceStartOfHour = secondsFromStartOfHour / 15;
-    	
-    	return fifteensecondTimeperiodsSinceStartOfHour;
-    }
-    
     public static void main(String[] args) {
-    	System.out.println(BerkeleyTreeMenuDao.getFifteensecondTimeperiodsSinceStartOfHour(1323263816l)); //67
-    	System.out.println(BerkeleyTreeMenuDao.getFifteensecondTimeperiodsSinceStartOfHour(1323266394l)); //239
-    	System.out.println(BerkeleyTreeMenuDao.getFifteensecondTimeperiodsSinceStartOfHour(1323265200l)); //160
-    	System.out.println(BerkeleyTreeMenuDao.getFifteensecondTimeperiodsSinceStartOfHour(1323262800l)); //0 
-    	System.out.println(BerkeleyTreeMenuDao.getFifteensecondTimeperiodsSinceStartOfHour(1323264315l)); //101
+    	System.out.println(LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(1323263816l)); //67
+    	System.out.println(LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(1323266394l)); //239
+    	System.out.println(LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(1323265200l)); //160
+    	System.out.println(LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(1323262800l)); //0 
+    	System.out.println(LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(1323264315l)); //101
     }
     
     private List<LiveStatistics> createLivestatisticsFromMetricHour(MetricHour metricHour, Integer minTimeperiodWithinTheHour, Integer maxTimeperiodWithinTheHour, Long hoursSince1970) {
@@ -107,13 +98,13 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
     		//If this is the first hour, start from the correct 15-second timeslot within the hour
     		Integer minTimeperiodWithinTheHour = 0;
     		if (index.longValue() == fromHoursSince1970.longValue()) {
-    			minTimeperiodWithinTheHour = getFifteensecondTimeperiodsSinceStartOfHour(minTimeperiod * 15);
+    			minTimeperiodWithinTheHour = LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(minTimeperiod * 15);
     		}
     		
     		//If this is the last hour, end with the correct 15-second timeslot within the hour
     		Integer maxTimeperiodWithinTheHour = null;
     		if (index.longValue() == toHoursSince1970.longValue()) {
-    			maxTimeperiodWithinTheHour = getFifteensecondTimeperiodsSinceStartOfHour(maxTimeperiod * 15);
+    			maxTimeperiodWithinTheHour = LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(maxTimeperiod * 15);
     		}
     		
     		retList.addAll(createLivestatisticsFromMetricHour(metricHour, minTimeperiodWithinTheHour, maxTimeperiodWithinTheHour, index));
@@ -163,41 +154,15 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
 		return treeMenu;
 	}
 
-	private Double parseDouble(String strVal) {
-		Double retVal = null;
-		if (strVal != null) {
-			try {
-				retVal = Double.parseDouble(strVal);
-			} catch (NumberFormatException nfe) {
-				retVal = null;
-			}
-		}
-		
-		return retVal;
-	}
-	
-	private Long parseLong(String strVal) {
-		Long retVal = null;
-		if (strVal != null) {
-			try {
-				retVal = Long.parseLong(strVal);
-			} catch (NumberFormatException nfe) {
-				retVal = null;
-			}
-		}
-		
-		return retVal;
-	}
-
 
     @Override
     public void storeIncomingStatistics(String guiPath, Long timeperiod, String value, ValueType valueType, UnitType unitType) {		
 		BerkeleyTreeMenuNode treeMenu = updateTreeMenu(guiPath, value != null);
-		Double valueDouble = parseDouble(value);
+		Double valueDouble = LiveStatisticsUtil.parseDouble(value);
 		Double calculatedValue = LiveStatisticsUtil.calculateValueBasedOnUnitType(valueDouble, unitType);
 		
 		int hoursSince1970 = timeperiod.intValue() / 240;
-		int fifteenSecondPeriodsSinceStartOfHour = getFifteensecondTimeperiodsSinceStartOfHour(timeperiod * 15);
+		int fifteenSecondPeriodsSinceStartOfHour = LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(timeperiod * 15);
 		
 		MetricHour mh = metricHourPrimaryIdx.get(hoursSince1970 + ";" + guiPath);
 		if (mh == null) {

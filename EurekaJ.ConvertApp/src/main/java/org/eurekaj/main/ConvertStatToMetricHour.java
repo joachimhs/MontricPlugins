@@ -12,6 +12,7 @@ import org.eurekaj.api.datatypes.TriggeredAlert;
 import org.eurekaj.api.enumtypes.UnitType;
 import org.eurekaj.api.enumtypes.ValueType;
 import org.eurekaj.berkeley.hour.db.BerkeleyDbEnv;
+import org.eurekaj.plugins.cassandra.CassandraEnv;
 
 public class ConvertStatToMetricHour {
 
@@ -35,7 +36,8 @@ public class ConvertStatToMetricHour {
 		System.setProperty("eurekaj.db.absPath", newDBPath);
 		
 		System.out.println("Setting up the new dev");
-		BerkeleyDbEnv newEnv = new BerkeleyDbEnv();
+		//BerkeleyDbEnv newEnv = new BerkeleyDbEnv();
+		CassandraEnv newEnv = new CassandraEnv();
 		newEnv.setup();
 		System.out.println("newEnv set up: " + newEnv.getLiveStatissticsDao());
 		
@@ -84,7 +86,7 @@ public class ConvertStatToMetricHour {
 		
 		System.out.println("------\nTotal number of converted Statistics: " + totalNodesConverted + " minTimeperiod: " + minTimeperiod + " maxTimeperiod: " + maxTimeperiod + "\n--------\n");
 		
-		System.out.println("Converting alerts");
+		/*System.out.println("Converting alerts");
 		List<Alert> alertList = oldEnv.getAlertDao().getAlerts(); 
 		for (Alert alert : alertList) {
 			newEnv.getAlertDao().persistAlert(alert); 
@@ -106,7 +108,7 @@ public class ConvertStatToMetricHour {
 		List<EmailRecipientGroup> emailRecipientGroupList = oldEnv.getSmtpDao().getEmailRecipientGroups();
 		for (EmailRecipientGroup eg : emailRecipientGroupList) {
 			newEnv.getSmtpDao().persistEmailRecipientGroup(eg);
-		}
+		}*/
 		
 		
 		
