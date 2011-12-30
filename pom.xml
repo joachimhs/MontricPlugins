@@ -16,7 +16,6 @@
 
 	<modules>
 		<module>EurekaJ.BerkeleyPlugin</module>
-		<module>EurekaJ.AlertEmailPlugin</module>
 		<module>EurekaJ.SimpleDBPlugin</module>
 		<module>EurekaJ.NexmoPlugin</module>
 		<module>EurekaJ.BerkeleyHourPlugin</module>
