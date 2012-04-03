@@ -38,6 +38,8 @@ public class SimpleDBLiveStatistics implements LiveStatistics, Comparable<LiveSt
     private String guiPath;
 	private Long timeperiod;
     private Double value;
+    private String valueType;
+    private String unitType;
 
     public SimpleDBLiveStatistics() {
     }
@@ -119,6 +121,22 @@ public class SimpleDBLiveStatistics implements LiveStatistics, Comparable<LiveSt
                 this.value = null;
             }
         }
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
+
+    public String getUnitType() {
+        return unitType;
+    }
+
+    public void setUnitType(String unitType) {
+        this.unitType = unitType;
     }
 
     public int compareTo(LiveStatistics other) {

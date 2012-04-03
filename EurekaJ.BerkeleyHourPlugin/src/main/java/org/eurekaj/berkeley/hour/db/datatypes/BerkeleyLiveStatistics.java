@@ -24,12 +24,14 @@ import com.sleepycat.persist.model.Relationship;
 import com.sleepycat.persist.model.SecondaryKey;
 import org.eurekaj.api.datatypes.LiveStatistics;
 
-@Entity(version = 5)
+@Entity(version = 6)
 public class BerkeleyLiveStatistics implements Comparable<LiveStatistics>, LiveStatistics {
 	@PrimaryKey private BerkeleyLiveStatisticsPk pk;
 	private Double value;
     //Many stats may have the same timeperiood
     @SecondaryKey(relate = Relationship.MANY_TO_ONE) private Long secondaryTimeperiod;
+    private String valueType;
+    private String unitType;
 
     public BerkeleyLiveStatistics(String guiPath, Long timeperiod, Double value) {
         BerkeleyLiveStatisticsPk pk = new BerkeleyLiveStatisticsPk();
@@ -76,8 +78,24 @@ public class BerkeleyLiveStatistics implements Comparable<LiveStatistics>, LiveS
 	public void setValue(Double value) {
 		this.value = value;
 	}
-	
-	@Override
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
+
+    public String getUnitType() {
+        return unitType;
+    }
+
+    public void setUnitType(String unitType) {
+        this.unitType = unitType;
+    }
+
+    @Override
 	public String toString() {
 		return "BerkeleyLiveStatistics [guiPath=" + pk.getGuiPath()+ ", timeperiod="
 				+ pk.getTimeperiod() + ", value=" + value + "]";
