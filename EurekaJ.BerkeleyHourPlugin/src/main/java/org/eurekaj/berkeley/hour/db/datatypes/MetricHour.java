@@ -5,9 +5,11 @@ import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
 import com.sleepycat.persist.model.SecondaryKey;
 
-@Entity(version=2)
+@Entity(version=3)
 public class MetricHour {
 	@PrimaryKey private String key; //hoursSince1970;guiPath
+    private String valueType;
+    private String unitType;
 	private Double [] valueArray;
 	private Double [] oneMinuteAverageArray;
 	private Double [] fiveMinuteAverageArray;
@@ -99,8 +101,24 @@ public class MetricHour {
 		
 		return null;
 	}
-	
-	public void setKey(String key) {
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
+
+    public String getUnitType() {
+        return unitType;
+    }
+
+    public void setUnitType(String unitType) {
+        this.unitType = unitType;
+    }
+
+    public void setKey(String key) {
 		this.key = key;
 		String[] keysplit = key.split(";");
 		if (keysplit.length == 2) {

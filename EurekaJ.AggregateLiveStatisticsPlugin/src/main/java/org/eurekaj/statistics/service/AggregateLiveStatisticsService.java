@@ -24,7 +24,6 @@ public class AggregateLiveStatisticsService implements EurekaJProcessIncomingSta
 
     @Override
     public void processStatistics(List<LiveStatistics> liveStatisticsList) {
-        System.out.println("Processing livestats from plugin: " + liveStatisticsList.size());
         for (LiveStatistics liveStatistics : liveStatisticsList) {
             String value = null;
             if (liveStatistics.getValue() != null) {

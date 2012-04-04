@@ -20,5 +20,6 @@
 		<module>EurekaJ.NexmoPlugin</module>
 		<module>EurekaJ.BerkeleyHourPlugin</module>
 		<module>EurekaJ.AggregateLiveStatisticsPlugin</module>
+		<module>EurekaJ.LiveStatisticsCounterPlugin</module>
 	</modules>
 </project>

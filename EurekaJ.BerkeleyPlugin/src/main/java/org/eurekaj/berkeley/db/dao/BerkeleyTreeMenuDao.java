@@ -166,10 +166,14 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
 			//We have a hit for a guipath and timeperiod. Update record
 			//Always set new value
 			oldStat.setValue(LiveStatisticsUtil.calculateValueBasedOnValueType(oldStat, calculatedValue, valueType));
+            oldStat.setValueType(valueType.value());
+            oldStat.setUnitType(unitType.value());
 			liveStatPrimaryIdx.put(oldStat);
 		} else {
 			//No hit, create new BerkeleyLiveStatistics
 			BerkeleyLiveStatistics livestats = new BerkeleyLiveStatistics(guiPath, timeperiod, calculatedValue);
+            livestats.setValueType(valueType.value());
+            livestats.setUnitType(unitType.value());
 			liveStatPrimaryIdx.put(livestats);
 		}
 	}

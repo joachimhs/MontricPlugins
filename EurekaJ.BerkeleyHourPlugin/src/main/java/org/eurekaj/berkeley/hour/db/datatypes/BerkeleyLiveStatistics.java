@@ -42,6 +42,12 @@ public class BerkeleyLiveStatistics implements Comparable<LiveStatistics>, LiveS
         this.secondaryTimeperiod = timeperiod;
     }
 
+    public BerkeleyLiveStatistics(String guiPath, Long timeperiod, Double value, String valueType, String unitType) {
+        this(guiPath, timeperiod, value);
+        this.valueType = valueType;
+        this.unitType = unitType;
+    }
+
     public BerkeleyLiveStatistics() {
 		super();
 	}

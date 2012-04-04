@@ -35,6 +35,7 @@ import org.eurekaj.berkeley.hour.db.datatypes.*;
 import com.sleepycat.persist.EntityCursor;
 import com.sleepycat.persist.PrimaryIndex;
 
+
 public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
 	private BerkeleyDbEnv dbEnvironment;
 	private PrimaryIndex<String, BerkeleyTreeMenuNode> treeMenuPrimaryIdx;
@@ -73,7 +74,7 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
     	for (int index = minTimeperiodWithinTheHour; index <= maxTimeperiodWithinTheHour; index++) {
     		Long timeperiod = (hoursSince1970 * 240) + index;
     		
-    		retList.add(new BerkeleyLiveStatistics(metricHour.getGuiPath(), timeperiod, metricHour.getValueAt(index)));
+    		retList.add(new BerkeleyLiveStatistics(metricHour.getGuiPath(), timeperiod, metricHour.getValueAt(index), metricHour.getValueType(), metricHour.getUnitType()));
     	}
     	
     	return retList;
@@ -168,7 +169,15 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
 		if (mh == null) {
 			mh = new MetricHour(hoursSince1970 + ";" + guiPath);
 		}
-		
+        
+        if (mh.getValueType() == null) {
+            mh.setValueType(valueType.value());
+        }
+        
+        if (mh.getUnitType() == null) {
+            mh.setUnitType(unitType.value());
+        }
+
 		Double prevValue = mh.getValueAt(fifteenSecondPeriodsSinceStartOfHour);
 		if (prevValue == null) {
 			mh.setValueAt(fifteenSecondPeriodsSinceStartOfHour, calculatedValue);
