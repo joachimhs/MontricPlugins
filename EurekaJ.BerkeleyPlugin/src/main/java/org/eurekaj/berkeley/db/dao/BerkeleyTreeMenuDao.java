@@ -50,6 +50,26 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
     }
 
     @Override
+    public void deleteLiveStatisticsBetween(String guiPath, Long fromTimeperiod, Long toTimeperiod) {
+        List<LiveStatistics> delStats = getLiveStatistics(guiPath, fromTimeperiod, toTimeperiod);
+
+        //Strore NULL instead of value
+        for (LiveStatistics delStat : delStats) {
+            storeIncomingStatistics(delStat.getGuiPath(), delStat.getTimeperiod(), null, ValueType.fromValue(delStat.getValueType()), UnitType.fromValue(delStat.getUnitType()));
+        }
+
+        /* ALTERNATIVELY. Items can be deleted directly here...
+        for (Long index = fromTimeperiod; index < toTimeperiod; index++) {
+            BerkeleyLiveStatisticsPk key = new BerkeleyLiveStatisticsPk();
+            key.setGuiPath(guiPath);
+            key.setTimeperiod(index);
+
+            liveStatPrimaryIdx.delete(key);
+            liveStatTimeperiodIdx.delete(index);
+        } */
+    }
+
+    @Override
 	public List<LiveStatistics> getLiveStatistics(String guiPath,
 			Long minTimeperiod, Long maxTimeperiod) {
 		List<LiveStatistics> retList = new ArrayList<LiveStatistics>();

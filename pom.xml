@@ -16,10 +16,12 @@
 
 	<modules>
 		<module>EurekaJ.BerkeleyPlugin</module>
+		<module>EurekaJ.CassandraPlugin</module>
 		<module>EurekaJ.SimpleDBPlugin</module>
 		<module>EurekaJ.NexmoPlugin</module>
 		<module>EurekaJ.BerkeleyHourPlugin</module>
 		<module>EurekaJ.AggregateLiveStatisticsPlugin</module>
 		<module>EurekaJ.LiveStatisticsCounterPlugin</module>
-	</modules>
+        <module>EurekaJ.DatabaseTest</module>
+    </modules>
 </project>

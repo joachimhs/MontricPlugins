@@ -21,18 +21,26 @@ package org.eurekaj.berkeley.hour.db.datatypes;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import org.eurekaj.api.datatypes.TreeMenuNode;
+import sun.util.resources.LocaleNames_da;
 
-@Entity(version=1)
+@Entity(version=2)
 public class BerkeleyTreeMenuNode implements TreeMenuNode, Comparable<TreeMenuNode> {
 	@PrimaryKey private String guiPath;
 	private String nodeLive;
+    private Long oneMinuteAverageLastUpdated;
+    private Long fiveMinuteAverageLastUpdated;
 	private Long halfHourAverageLastUpdated;
 	private Long hourAverageLastUpdated;
 	private Long dailyAverageLastUpdated;
 	private Long weeklyAverageLastUpdated;
 	
 	public BerkeleyTreeMenuNode() {
-		
+		halfHourAverageLastUpdated = 0l;
+		hourAverageLastUpdated = 0l;
+		dailyAverageLastUpdated = 0l;
+		weeklyAverageLastUpdated = 0l;
+        oneMinuteAverageLastUpdated = 0l;
+        fiveMinuteAverageLastUpdated = 0l;
 	}
 	
 	public BerkeleyTreeMenuNode(String guiPath, String nodeLive) {
@@ -43,6 +51,8 @@ public class BerkeleyTreeMenuNode implements TreeMenuNode, Comparable<TreeMenuNo
 		hourAverageLastUpdated = 0l;
 		dailyAverageLastUpdated = 0l;
 		weeklyAverageLastUpdated = 0l;
+        oneMinuteAverageLastUpdated = 0l;
+        fiveMinuteAverageLastUpdated = 0l;
 	}
 	
 	public String getGuiPath() {
@@ -59,7 +69,23 @@ public class BerkeleyTreeMenuNode implements TreeMenuNode, Comparable<TreeMenuNo
 		this.nodeLive = nodeLive;
 	}
 
-	public Long getDailyAverageLastUpdated() {
+    public Long getOneMinuteAverageLastUpdated() {
+        return oneMinuteAverageLastUpdated;
+    }
+
+    public void setOneMinuteAverageLastUpdated(Long oneMinuteAverageLastUpdated) {
+        this.oneMinuteAverageLastUpdated = oneMinuteAverageLastUpdated;
+    }
+
+    public Long getFiveMinuteAverageLastUpdated() {
+        return fiveMinuteAverageLastUpdated;
+    }
+
+    public void setFiveMinuteAverageLastUpdated(Long fiveMinuteAverageLastUpdated) {
+        this.fiveMinuteAverageLastUpdated = fiveMinuteAverageLastUpdated;
+    }
+
+    public Long getDailyAverageLastUpdated() {
 		return dailyAverageLastUpdated;
 	}
 	
