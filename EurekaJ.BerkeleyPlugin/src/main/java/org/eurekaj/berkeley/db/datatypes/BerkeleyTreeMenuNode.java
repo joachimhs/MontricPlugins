@@ -22,21 +22,33 @@ import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import org.eurekaj.api.datatypes.TreeMenuNode;
 
-@Entity
+@Entity(version=2)
 public class BerkeleyTreeMenuNode implements TreeMenuNode, Comparable<TreeMenuNode> {
-	@PrimaryKey String guiPath;
-	String nodeLive;
-	
+	@PrimaryKey private String guiPath;
+	private String nodeLive;
+    private Long oneMinuteAverageLastUpdated;
+    private Long fiveMinuteAverageLastUpdated;
+	private Long halfHourAverageLastUpdated;
+	private Long hourAverageLastUpdated;
+	private Long dailyAverageLastUpdated;
+	private Long weeklyAverageLastUpdated;
+
 	public BerkeleyTreeMenuNode() {
-		
-	}
-	
-	public BerkeleyTreeMenuNode(String guiPath, String nodeLive) {
 		super();
+        halfHourAverageLastUpdated = 0l;
+		hourAverageLastUpdated = 0l;
+		dailyAverageLastUpdated = 0l;
+		weeklyAverageLastUpdated = 0l;
+        oneMinuteAverageLastUpdated = 0l;
+        fiveMinuteAverageLastUpdated = 0l;
+	}
+
+	public BerkeleyTreeMenuNode(String guiPath, String nodeLive) {
+        this();
 		this.guiPath = guiPath;
 		this.nodeLive = nodeLive;
 	}
-	
+
 	public String getGuiPath() {
 		return guiPath;
 	}
@@ -51,17 +63,63 @@ public class BerkeleyTreeMenuNode implements TreeMenuNode, Comparable<TreeMenuNo
 		this.nodeLive = nodeLive;
 	}
 
+    public Long getOneMinuteAverageLastUpdated() {
+        return oneMinuteAverageLastUpdated;
+    }
+
+    public void setOneMinuteAverageLastUpdated(Long oneMinuteAverageLastUpdated) {
+        this.oneMinuteAverageLastUpdated = oneMinuteAverageLastUpdated;
+    }
+
+    public Long getFiveMinuteAverageLastUpdated() {
+        return fiveMinuteAverageLastUpdated;
+    }
+
+    public void setFiveMinuteAverageLastUpdated(Long fiveMinuteAverageLastUpdated) {
+        this.fiveMinuteAverageLastUpdated = fiveMinuteAverageLastUpdated;
+    }
+
+    public Long getDailyAverageLastUpdated() {
+		return dailyAverageLastUpdated;
+	}
+
+	public void setDailyAverageLastUpdated(Long dailyAverageLastUpdated) {
+		this.dailyAverageLastUpdated = dailyAverageLastUpdated;
+	}
+
+	public Long getHalfHourAverageLastUpdated() {
+		return halfHourAverageLastUpdated;
+	}
+
+	public void setHalfHourAverageLastUpdated(Long halfHourAverageLastUpdated) {
+		this.halfHourAverageLastUpdated = halfHourAverageLastUpdated;
+	}
+
+	public Long getHourAverageLastUpdated() {
+		return hourAverageLastUpdated;
+	}
+
+	public void setHourAverageLastUpdated(Long hourAverageLastUpdated) {
+		this.hourAverageLastUpdated = hourAverageLastUpdated;
+	}
+
+	public Long getWeeklyAverageLastUpdated() {
+		return weeklyAverageLastUpdated;
+	}
+
+	public void setWeeklyAverageLastUpdated(Long weeklyAverageLastUpdated) {
+		this.weeklyAverageLastUpdated = weeklyAverageLastUpdated;
+	}
+
 	public int compareTo(TreeMenuNode other) {
 		if (other == null || other.getGuiPath() == null) {
 			return 1;
 		}
-		
+
 		if (this.getGuiPath() == null) {
 			return -1;
 		}
-		
+
 		return this.getGuiPath().compareTo(other.getGuiPath());
 	}
-	
-	
 }

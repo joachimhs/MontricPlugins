@@ -63,7 +63,17 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
     	System.out.println(LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(1323262800l)); //0 
     	System.out.println(LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(1323264315l)); //101
     }
-    
+
+    @Override
+    public void deleteLiveStatisticsBetween(String guiPath, Long fromTimeperiod, Long toTimeperiod) {
+        List<LiveStatistics> delStats = getLiveStatistics(guiPath, fromTimeperiod, toTimeperiod);
+
+        //Strore NULL instead of value
+        for (LiveStatistics delStat : delStats) {
+            storeIncomingStatistics(delStat.getGuiPath(), delStat.getTimeperiod(), null, ValueType.fromValue(delStat.getValueType()), UnitType.fromValue(delStat.getUnitType()));
+        }
+    }
+
     private List<LiveStatistics> createLivestatisticsFromMetricHour(MetricHour metricHour, Integer minTimeperiodWithinTheHour, Integer maxTimeperiodWithinTheHour, Long hoursSince1970) {
     	List<LiveStatistics> retList = new ArrayList<LiveStatistics>();
     	
