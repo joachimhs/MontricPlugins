@@ -76,6 +76,36 @@ public class SimpleDBTreeMenuNode  implements TreeMenuNode, Comparable<TreeMenuN
         return nodeLive;
     }
 
+    @Override
+    public Long getOneMinuteAverageLastUpdated() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Long getFiveMinuteAverageLastUpdated() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Long getHalfHourAverageLastUpdated() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Long getHourAverageLastUpdated() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Long getDailyAverageLastUpdated() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Long getWeeklyAverageLastUpdated() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public void setGuiPath(String guiPath) {
         this.guiPath = guiPath;
     }

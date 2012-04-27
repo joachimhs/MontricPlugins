@@ -241,7 +241,12 @@ public class SimpleDBTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
         throw new NotImplementedException();
     }
 
-	@Override
+    @Override
+    public void deleteLiveStatisticsBetween(String guiPath, Long fromTimeperiod, Long toTimeperiod) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public void deleteTreeMenu(String guiPath) {
 		throw new NotImplementedException();		
 	}

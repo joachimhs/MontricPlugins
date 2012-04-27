@@ -1,15 +1,20 @@
 package org.eurekaj.dbtest;
 
+import me.prettyprint.cassandra.testutils.EmbeddedServerHelper;
+import org.apache.cassandra.config.ConfigurationException;
+import org.apache.thrift.transport.TTransportException;
+import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.eurekaj.api.datatypes.LiveStatistics;
 import org.eurekaj.api.enumtypes.UnitType;
 import org.eurekaj.api.enumtypes.ValueType;
 import org.eurekaj.plugins.cassandra.CassandraEnv;
 import org.joda.time.DateTime;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -22,8 +27,20 @@ import java.util.List;
 public class TestCassandraMetricHourStorage {
     private CassandraEnv newEnv;
 
+    @BeforeClass
+    public static void beforeClass() throws IOException, TTransportException, ConfigurationException, InterruptedException, URISyntaxException {
+        EmbeddedCassandraServerHelper.startEmbeddedCassandra();
+    }
+
+    @AfterClass
+    public static void afterClass() throws IOException {
+        EmbeddedCassandraServerHelper.cleanEmbeddedCassandra();
+        EmbeddedCassandraServerHelper.stopEmbeddedCassandra();
+    }
+
     @Before
     public void setup() {
+
         newEnv = new CassandraEnv();
 		newEnv.setup();
 		System.out.println("newEnv set up: " + newEnv.getLiveStatissticsDao());

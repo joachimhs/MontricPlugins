@@ -32,7 +32,7 @@ public class CassandraEnv extends EurekaJDBPluginService {
 
 	@Override
 	public void setup() {
-		eurekaJCluster = HFactory.getOrCreateCluster("eurekaj_cluster", "localhost:9160");
+		eurekaJCluster = HFactory.getOrCreateCluster("eurekaj_cluster", "localhost:9171");
 
 		KeyspaceDefinition keyspaceDef = eurekaJCluster.describeKeyspace("eurekaj_keyspace");
 
