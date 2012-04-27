@@ -50,8 +50,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <artifactId>cassandra-parent</artifactId>
             <groupId>org.apache.cassandra</groupId>
+            <artifactId>apache-cassandra</artifactId>
             <version>1.1.0</version>
         </dependency>
     </dependencies>

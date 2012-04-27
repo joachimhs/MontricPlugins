@@ -1,6 +1,5 @@
 package org.eurekaj.dbtest;
 
-import me.prettyprint.cassandra.testutils.EmbeddedServerHelper;
 import org.apache.cassandra.config.ConfigurationException;
 import org.apache.thrift.transport.TTransportException;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
