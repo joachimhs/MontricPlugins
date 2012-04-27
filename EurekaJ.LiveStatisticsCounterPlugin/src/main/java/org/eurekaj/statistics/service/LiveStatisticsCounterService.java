@@ -28,7 +28,6 @@ public class LiveStatisticsCounterService implements EurekaJProcessIncomingStati
 
     @Override
     public void processStatistics(List<LiveStatistics> liveStatisticsList) {
-        System.out.println("counting statistics. Grouping by agentName. count: " + liveStatisticsList.size());
         Hashtable<String, AtomicInteger> statHash = new Hashtable<String, AtomicInteger>();
         Long timePeriod = 0l;
 
@@ -58,7 +57,7 @@ public class LiveStatisticsCounterService implements EurekaJProcessIncomingStati
             
             if (eurekaJDBPluginService != null) {
                 eurekaJDBPluginService.getLiveStatissticsDao().storeIncomingStatistics(
-                        "AgentStats:" + key + ":count",
+                        "AgentStats:" + key + ":Incoming Stat Count",
                         timePeriod,
                         "" + count.get(),
                         ValueType.AGGREGATE,
