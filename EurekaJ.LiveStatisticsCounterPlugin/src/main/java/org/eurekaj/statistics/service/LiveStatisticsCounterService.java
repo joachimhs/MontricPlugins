@@ -1,13 +1,11 @@
 package org.eurekaj.statistics.service;
 
-import com.sun.jdi.IntegerType;
 import org.eurekaj.api.datatypes.LiveStatistics;
 import org.eurekaj.api.enumtypes.UnitType;
 import org.eurekaj.api.enumtypes.ValueType;
 import org.eurekaj.api.service.EurekaJProcessIncomingStatisticsService;
 import org.eurekaj.spi.db.EurekaJDBPluginService;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -58,6 +56,7 @@ public class LiveStatisticsCounterService implements EurekaJProcessIncomingStati
             if (eurekaJDBPluginService != null) {
                 eurekaJDBPluginService.getLiveStatissticsDao().storeIncomingStatistics(
                         "AgentStats:" + key + ":Incoming Stat Count",
+                        "ACCOUNT",
                         timePeriod,
                         "" + count.get(),
                         ValueType.AGGREGATE,

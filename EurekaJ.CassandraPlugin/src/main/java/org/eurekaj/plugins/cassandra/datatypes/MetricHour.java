@@ -1,12 +1,22 @@
 package org.eurekaj.plugins.cassandra.datatypes;
 
+import org.apache.cassandra.db.marshal.DoubleType;
+import org.apache.cassandra.db.marshal.LongType;
 import org.eurekaj.api.util.DoubleParser;
+import org.eurekaj.plugins.util.ArrayToStringCassandraValidator;
+import org.firebrandocm.dao.annotations.Column;
+import org.firebrandocm.dao.annotations.ColumnFamily;
+import org.firebrandocm.dao.annotations.Key;
+
+import java.util.List;
+import java.util.Map;
 
 public class MetricHour {
-	private String key; //guiPath;hoursSince1970
-	private Double [] valueArray;
-	private Long hoursSince1970;
-	private Double [] oneMinuteAverageArray;
+    private String guiPath;
+    private String accountName;
+    private Long hoursSince1970;
+    private Double [] metrics;
+    private Double [] oneMinuteAverageArray;
 	private Double [] fiveMinuteAverageArray;
 	private Double [] halfHourAverageArray;
 	private Double [] hourAverageArray;
@@ -15,9 +25,11 @@ public class MetricHour {
     private String valueType;
     private String unitType;
 	
-	public MetricHour(String key, String valueType, String unitType) {
-		this.setKey(key);
-		valueArray = new Double[240]; //Once each 15 seconds
+	public MetricHour(String accountName, String guiPath, Long hoursSince1970, String valueType, String unitType) {
+		this.accountName = accountName;
+        this.guiPath = guiPath;
+        this.hoursSince1970 = hoursSince1970;
+		metrics = new Double[240]; //Once each 15 seconds
         oneMinuteAverageArray = new Double[60]; //Once each minute
 		fiveMinuteAverageArray = new Double[60]; //Once each minute
 		halfHourAverageArray = new Double[20]; //Once each 5 minutes
@@ -28,21 +40,37 @@ public class MetricHour {
         this.unitType = unitType;
 	}
 	
-	public MetricHour(String key, String valueArrayString, String valueType, String unitType) {
-		this(key, valueType, unitType);
-		valueArray = new Double[240];
-		setValueArrayFromString(valueArrayString);
+	public MetricHour(String accountName, String guiPath, Long hoursSince1970, String metrics, String valueType, String unitType) {
+		this(accountName, guiPath, hoursSince1970, valueType, unitType);
+		this.metrics = new Double[240];
+		setMetricsArrayFromString(metrics);
 	}
-	
-	public void setValueArrayFromString(String valueString) {
-		if (valueString.contains(";")) {
+
+    public String getGuiPath() {
+        return guiPath;
+    }
+
+    public void setGuiPath(String guiPath) {
+        this.guiPath = guiPath;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public void setMetricsArrayFromString(String metricsString) {
+		if (metricsString.contains("; ")) {
 			int index = 0;
-			for (String currValue : valueString.split(";")) {
-				valueArray[index] = DoubleParser.parseDoubleFromString(currValue, null);
+			for (String currValue : metricsString.split(";")) {
+				metrics[index] = DoubleParser.parseDoubleFromString(currValue, null);
 				index++;
 			}
 		} else {
-			valueArray[0] = DoubleParser.parseDoubleFromString(valueString, null);
+			metrics[0] = DoubleParser.parseDoubleFromString(metricsString, null);
 		}
 		
 	}
@@ -50,47 +78,43 @@ public class MetricHour {
 	public MetricHour() {
 		super();
 	}
+
+
 	
 	public Double getValueAt(int index) {
-		return valueArray[index];
+		return metrics[index];
 	}
 	
 	public void setValueAt(int index, Double value) {
-		valueArray[index] =  value;
+		metrics[index] =  value;
 	}
-	
-	public String getValueArrayString() {
-		StringBuilder sb = new StringBuilder();
-		
-		for (int i = 0; i < valueArray.length; i++) {
-			sb.append(valueArray[i]);
-			if (i < (valueArray.length - 1)) {
-				sb.append(";");
-			}
-		}
-		
-		return sb.toString();
-	}
-	
-	public String getKey() {
-		return key;
-	}
-	
-	public String getGuiPath() {
-		if (this.key.contains(";")) {
-			return this.key.split(";")[0];
-		}
-		
-		return null;
-	}
-	
-	public void setKey(String key) {
-		this.key = key;
-		String[] keysplit = key.split(";");
-		if (keysplit.length == 2) {
-			this.hoursSince1970 = Long.parseLong(keysplit[1]);
-		}
-	}
+
+    public Double[] getMetrics() {
+        return metrics;
+    }
+
+    public void setMetrics(Double[] metrics) {
+        this.metrics = metrics;
+    }
+
+    public void setMetrics(Map<Integer, Double> metricsMap) {
+        if (metrics == null) {
+            metrics = new Double[240];
+        }
+        for (Integer key : metricsMap.keySet()) {
+            if (key.intValue() >= 0 && key.intValue() < 240) {
+                this.metrics[key] = metricsMap.get(key);
+            }
+        }
+    }
+
+    public void setMetrics(List<Double> metrics) {
+        if (metrics.size() >= 240) {
+            for (int i = 0; i < metrics.size(); i++) {
+                this.metrics[i] = metrics.get(i);
+            }
+        }
+    }
 
     public Double[] getOneMinuteAverageArray() {
         return oneMinuteAverageArray;
@@ -143,6 +167,10 @@ public class MetricHour {
     public Long getHoursSince1970() {
 		return hoursSince1970;
 	}
+
+    public void setHoursSince1970(Long hoursSince1970) {
+        this.hoursSince1970 = hoursSince1970;
+    }
 
     public String getValueType() {
         return valueType;

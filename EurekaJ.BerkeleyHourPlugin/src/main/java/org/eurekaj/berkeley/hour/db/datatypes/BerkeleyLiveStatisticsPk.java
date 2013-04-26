@@ -25,6 +25,7 @@ import com.sleepycat.persist.model.Persistent;
 public class BerkeleyLiveStatisticsPk {
 	@KeyField(1) private String guiPath;
 	@KeyField(2) private Long timeperiod;
+    @KeyField(3) private String accountName;
 
 	public String getGuiPath() {
 		return guiPath;
@@ -41,4 +42,12 @@ public class BerkeleyLiveStatisticsPk {
 	public void setTimeperiod(Long timeperiod) {
 		this.timeperiod = timeperiod;
 	}
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
 }

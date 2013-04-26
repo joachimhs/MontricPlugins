@@ -60,6 +60,13 @@ public class BerkeleyLiveStatistics implements Comparable<LiveStatistics>, LiveS
 		this.pk = pk;
 	}
 
+    public String getAccountName() {
+        return pk.getAccountName();
+    }
+
+    public void setAccountName(String accountName) {
+        pk.setAccountName(accountName);
+    }
 
     @Override
     public String getGuiPath() {

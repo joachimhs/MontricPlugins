@@ -21,11 +21,13 @@ package org.eurekaj.berkeley.hour.db.dao;
 import com.sleepycat.persist.EntityCursor;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
+import org.apache.log4j.Logger;
 import org.eurekaj.api.dao.AlertDao;
 import org.eurekaj.api.datatypes.Alert;
 import org.eurekaj.api.datatypes.TriggeredAlert;
 import org.eurekaj.berkeley.hour.db.BerkeleyDbEnv;
 import org.eurekaj.berkeley.hour.db.datatypes.BerkeleyAlert;
+import org.eurekaj.berkeley.hour.db.datatypes.BerkeleyAlertPk;
 import org.eurekaj.berkeley.hour.db.datatypes.BerkeleyTriggeredAlert;
 import org.eurekaj.berkeley.hour.db.datatypes.BerkeleyTriggeredAlertPk;
 
@@ -41,36 +43,42 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class BerkeleyAlertDao implements AlertDao {
+    private static Logger log = Logger.getLogger(BerkeleyAlertDao.class.getName());
+
     private BerkeleyDbEnv dbEnvironment;
 
-    private PrimaryIndex<String, BerkeleyAlert> alertPrimaryIdx;
+    private PrimaryIndex<BerkeleyAlertPk, BerkeleyAlert> alertPrimaryIdx;
+    private SecondaryIndex<String, BerkeleyAlertPk, BerkeleyAlert> alertAccountNameSecondaryIndex;
     private PrimaryIndex<BerkeleyTriggeredAlertPk, BerkeleyTriggeredAlert> triggeredAlertPrimaryIdx;
-    private SecondaryIndex<Long, BerkeleyTriggeredAlertPk, BerkeleyTriggeredAlert> triggeredAlertTimeperiodSecondaryIdx;
+    private SecondaryIndex<BerkeleyTriggeredAlertPk, BerkeleyTriggeredAlertPk, BerkeleyTriggeredAlert> triggeredAlertTimeperiodSecondaryIdx;
 
     public BerkeleyAlertDao(BerkeleyDbEnv dbEnvironment) {
         this.dbEnvironment = dbEnvironment;
 
-        alertPrimaryIdx = this.dbEnvironment.getAlertStore().getPrimaryIndex(String.class, BerkeleyAlert.class);
+        alertPrimaryIdx = this.dbEnvironment.getAlertStore().getPrimaryIndex(BerkeleyAlertPk.class, BerkeleyAlert.class);
+        alertAccountNameSecondaryIndex = this.dbEnvironment.getAlertStore().getSecondaryIndex(alertPrimaryIdx, String.class, "accountName");
         triggeredAlertPrimaryIdx = this.dbEnvironment.getTriggeredAlertStore().getPrimaryIndex(BerkeleyTriggeredAlertPk.class, BerkeleyTriggeredAlert.class);
-        triggeredAlertTimeperiodSecondaryIdx = this.dbEnvironment.getTriggeredAlertStore().getSecondaryIndex(triggeredAlertPrimaryIdx, Long.class, "triggeredTimeperiod");
+        triggeredAlertTimeperiodSecondaryIdx = this.dbEnvironment.getTriggeredAlertStore().getSecondaryIndex(triggeredAlertPrimaryIdx, BerkeleyTriggeredAlertPk.class, "triggeredTimeperiod");
     }
 
     @Override
 	public void persistAlert(Alert alert) {
         BerkeleyAlert berkeleyAlert = new BerkeleyAlert(alert);
+        log.info("AlertName: " + berkeleyAlert.getAlertName() + " account: " + berkeleyAlert.getAccountName() + " pk.account: " + berkeleyAlert.getPk().getAccountName());
 		alertPrimaryIdx.put(berkeleyAlert);
-		
 	}
 
     @Override
-	public BerkeleyAlert getAlert(String alertName) {
-		return alertPrimaryIdx.get(alertName);
+	public BerkeleyAlert getAlert(String alertName, String accountName) {
+        BerkeleyAlertPk pk = new BerkeleyAlertPk(alertName, accountName);
+		return alertPrimaryIdx.get(pk);
 	}
 
     @Override
-	public List<Alert> getAlerts() {
+	public List<Alert> getAlerts(String accountName) {
 		List<Alert> retList = new ArrayList<Alert>();
-		EntityCursor<BerkeleyAlert> pi_cursor = alertPrimaryIdx.entities();
+
+		EntityCursor<BerkeleyAlert> pi_cursor = alertAccountNameSecondaryIndex.entities(accountName, true, accountName, true);
 		try {
 		    for (BerkeleyAlert node : pi_cursor) {
 		        retList.add(node);
@@ -90,10 +98,13 @@ public class BerkeleyAlertDao implements AlertDao {
     }
 
     @Override
-    public List<TriggeredAlert> getTriggeredAlerts(Long fromTimeperiod, Long toTimeperiod) {
+    public List<TriggeredAlert> getTriggeredAlerts(String accountName, Long fromTimeperiod, Long toTimeperiod) {
         List<TriggeredAlert> retList = new ArrayList<TriggeredAlert>();
 
-        EntityCursor<BerkeleyTriggeredAlert> si_cursor = triggeredAlertTimeperiodSecondaryIdx.entities(fromTimeperiod, true, toTimeperiod, true);
+        BerkeleyTriggeredAlertPk fromKey = new BerkeleyTriggeredAlertPk(null, fromTimeperiod, accountName);
+        BerkeleyTriggeredAlertPk toKey = new BerkeleyTriggeredAlertPk(null, toTimeperiod, accountName);
+
+        EntityCursor<BerkeleyTriggeredAlert> si_cursor = triggeredAlertTimeperiodSecondaryIdx.entities(fromKey, true, toKey, true);
 
 		try {
 			for (BerkeleyTriggeredAlert triggeredAlert : si_cursor) {
@@ -107,11 +118,11 @@ public class BerkeleyAlertDao implements AlertDao {
     }
 
     @Override
-    public List<TriggeredAlert> getTriggeredAlerts(String alertname, Long fromTimeperiod, Long toTimeperiod) {
+    public List<TriggeredAlert> getTriggeredAlerts(String alertname, String accountName, Long fromTimeperiod, Long toTimeperiod) {
         List<TriggeredAlert> retList = new ArrayList<TriggeredAlert>();
 
-        BerkeleyTriggeredAlertPk fromKey = new BerkeleyTriggeredAlertPk(alertname, fromTimeperiod);
-        BerkeleyTriggeredAlertPk toKey = new BerkeleyTriggeredAlertPk(alertname, toTimeperiod);
+        BerkeleyTriggeredAlertPk fromKey = new BerkeleyTriggeredAlertPk(alertname, fromTimeperiod, accountName);
+        BerkeleyTriggeredAlertPk toKey = new BerkeleyTriggeredAlertPk(alertname, toTimeperiod, accountName);
 
         EntityCursor<BerkeleyTriggeredAlert> pi_cursor = triggeredAlertPrimaryIdx.entities(fromKey, true, toKey, true);
 
@@ -127,7 +138,7 @@ public class BerkeleyAlertDao implements AlertDao {
     }
 
     @Override
-    public List<TriggeredAlert> getRecentTriggeredAlerts(int numAlerts) {
+    public List<TriggeredAlert> getRecentTriggeredAlerts(String accountName, int numAlerts) {
         List<TriggeredAlert> retList = new ArrayList<TriggeredAlert>();
 
         Calendar nowCal = Calendar.getInstance();
@@ -135,7 +146,10 @@ public class BerkeleyAlertDao implements AlertDao {
         nowCal.add(Calendar.HOUR, -1 * 24 * 7);
         Long toTimeperiod = nowCal.getTimeInMillis() / 15000;
 
-        EntityCursor<BerkeleyTriggeredAlert> si_cursor = triggeredAlertTimeperiodSecondaryIdx.entities(fromTimeperiod, true, toTimeperiod, true);
+        BerkeleyTriggeredAlertPk fromKey = new BerkeleyTriggeredAlertPk(null, fromTimeperiod, accountName);
+        BerkeleyTriggeredAlertPk toKey = new BerkeleyTriggeredAlertPk(null, toTimeperiod, accountName);
+
+        EntityCursor<BerkeleyTriggeredAlert> si_cursor = triggeredAlertTimeperiodSecondaryIdx.entities(fromKey, true, toKey, true);
 
 		try {
             //Ensure that we do not attempt to fetch more alerts than there are in the DB
@@ -162,7 +176,8 @@ public class BerkeleyAlertDao implements AlertDao {
     }
 
 	@Override
-	public void deleteAlert(String alertName) {
-		alertPrimaryIdx.delete(alertName);
+	public void deleteAlert(String alertName, String accountName) {
+        BerkeleyAlertPk pk = new BerkeleyAlertPk(alertName, accountName);
+		alertPrimaryIdx.delete(pk);
 	}
 }

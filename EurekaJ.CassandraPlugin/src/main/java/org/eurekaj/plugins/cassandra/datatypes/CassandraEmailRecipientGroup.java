@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class CassandraEmailRecipientGroup implements Comparable<EmailRecipientGroup>, EmailRecipientGroup{
     private String emailRecipientGroupName;
+    private String accountName;
 	private String smtpServerhost;
 	private String smtpUsername;
 	private String smtpPassword;
@@ -45,6 +46,14 @@ public class CassandraEmailRecipientGroup implements Comparable<EmailRecipientGr
 
     public void setSmtpServerhost(String smtpServerhost) {
         this.smtpServerhost = smtpServerhost;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     public String getSmtpUsername() {

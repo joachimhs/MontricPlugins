@@ -24,6 +24,7 @@ import org.eurekaj.api.dao.GroupedStatisticsDao;
 import org.eurekaj.api.datatypes.GroupedStatistics;
 import org.eurekaj.berkeley.hour.db.BerkeleyDbEnv;
 import org.eurekaj.berkeley.hour.db.datatypes.BerkeleyGroupedStatistics;
+import org.eurekaj.berkeley.hour.db.datatypes.BerkeleyGroupedStatisticsPk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,21 +39,22 @@ import java.util.List;
 public class BerkeleyGroupedStatisticsDao implements GroupedStatisticsDao {
     private BerkeleyDbEnv dbEnvironment;
 
-    private PrimaryIndex<String, BerkeleyGroupedStatistics> groupedStatPrimaryIdx;
+    private PrimaryIndex<BerkeleyGroupedStatisticsPk, BerkeleyGroupedStatistics> groupedStatPrimaryIdx;
 
     public BerkeleyGroupedStatisticsDao(BerkeleyDbEnv dbEnvironment) {
         this.dbEnvironment = dbEnvironment;
-        groupedStatPrimaryIdx = this.dbEnvironment.getGroupedStatisticsStore().getPrimaryIndex(String.class, BerkeleyGroupedStatistics.class);
+        groupedStatPrimaryIdx = this.dbEnvironment.getGroupedStatisticsStore().getPrimaryIndex(BerkeleyGroupedStatisticsPk.class, BerkeleyGroupedStatistics.class);
     }
 
 
     @Override
-    public BerkeleyGroupedStatistics getGroupedStatistics(String name) {
-		return groupedStatPrimaryIdx.get(name);
+    public BerkeleyGroupedStatistics getGroupedStatistics(String name, String accountName) {
+        BerkeleyGroupedStatisticsPk pk = new BerkeleyGroupedStatisticsPk(name, accountName);
+		return groupedStatPrimaryIdx.get(pk);
 	}
 
     @Override
-	public List<GroupedStatistics> getGroupedStatistics() {
+	public List<GroupedStatistics> getGroupedStatistics(String accountName) {
 		List<GroupedStatistics> retList = new ArrayList<GroupedStatistics>();
 		EntityCursor<BerkeleyGroupedStatistics> pi_cursor = groupedStatPrimaryIdx.entities();
 		try {
@@ -70,13 +72,12 @@ public class BerkeleyGroupedStatisticsDao implements GroupedStatisticsDao {
 	public void persistGroupInstrumentation(GroupedStatistics groupedStatistics) {
         BerkeleyGroupedStatistics berkeleyGroupedStatistics = new BerkeleyGroupedStatistics(groupedStatistics);
 		groupedStatPrimaryIdx.put(berkeleyGroupedStatistics);
-
 	}
 
-
 	@Override
-	public void deleteGroupedChart(String groupName) {
-		groupedStatPrimaryIdx.delete(groupName);
+	public void deleteGroupedChart(String groupName, String accountName) {
+        BerkeleyGroupedStatisticsPk pk = new BerkeleyGroupedStatisticsPk(groupName, accountName);
+		groupedStatPrimaryIdx.delete(pk);
 		
 	}
 }

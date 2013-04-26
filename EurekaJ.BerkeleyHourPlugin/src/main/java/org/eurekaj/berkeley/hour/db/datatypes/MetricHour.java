@@ -7,7 +7,7 @@ import com.sleepycat.persist.model.SecondaryKey;
 
 @Entity(version=3)
 public class MetricHour {
-	@PrimaryKey private String key; //hoursSince1970;guiPath
+	@PrimaryKey private MetricHourPk pk;
     private String valueType;
     private String unitType;
 	private Double [] valueArray;
@@ -19,8 +19,8 @@ public class MetricHour {
 	private Double weeklyAverage;
 	@SecondaryKey(relate = Relationship.MANY_TO_ONE) private Long hoursSince1970;
 	
-	public MetricHour(String key) {
-		this.setKey(key);
+	public MetricHour(String guiPath, String accountName, Long timePeriod) {
+        this.pk = new MetricHourPk(guiPath, accountName, timePeriod);
 		valueArray = new Double[240]; //Once each 15 seconds
 		oneMinuteAverageArray = new Double[60]; //Once each minute
 		fiveMinuteAverageArray = new Double[60]; //Once each minute
@@ -33,8 +33,40 @@ public class MetricHour {
 	public MetricHour() {
 		super();
 	}
-	
-	public Double getValueAt(int index) {
+
+    public String getGuiPath() {
+        return this.pk.getGuiPath();
+    }
+
+    public void setGuiPath(String guiPath) {
+        this.pk.setGuiPath(getGuiPath());
+    }
+
+    public Long getHoursSince1970() {
+        return this.pk.getHoursSince1970();
+    }
+
+    public void setHoursSince1970(Long hoursSince1970) {
+        this.pk.setHoursSince1970(hoursSince1970);
+    }
+
+    public String getAccountName() {
+        return this.pk.getAccountName();
+    }
+
+    public void setAccountName(String accountName) {
+        this.pk.setAccountName(accountName);
+    }
+
+    public MetricHourPk getPk() {
+        return pk;
+    }
+
+    public void setPk(MetricHourPk pk) {
+        this.pk = pk;
+    }
+
+    public Double getValueAt(int index) {
 		return valueArray[index];
 	}
 	
@@ -89,18 +121,7 @@ public class MetricHour {
 	public void setWeeklyAverage(Double weeklyAverage) {
 		this.weeklyAverage = weeklyAverage;
 	}
-	
-	public String getKey() {
-		return key;
-	}
-	
-	public String getGuiPath() {
-		if (this.key.contains(";")) {
-			return this.key.split(";")[1];
-		}
-		
-		return null;
-	}
+
 
     public String getValueType() {
         return valueType;
@@ -117,16 +138,4 @@ public class MetricHour {
     public void setUnitType(String unitType) {
         this.unitType = unitType;
     }
-
-    public void setKey(String key) {
-		this.key = key;
-		String[] keysplit = key.split(";");
-		if (keysplit.length == 2) {
-			this.hoursSince1970 = Long.parseLong(keysplit[0]);
-		}
-	}
-	
-	public Long getHoursSince1970() {
-		return hoursSince1970;
-	}
 }

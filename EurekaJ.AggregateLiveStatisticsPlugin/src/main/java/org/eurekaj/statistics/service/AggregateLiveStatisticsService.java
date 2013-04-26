@@ -1,6 +1,7 @@
 package org.eurekaj.statistics.service;
 
 import org.eurekaj.api.datatypes.LiveStatistics;
+import org.eurekaj.api.datatypes.basic.BasicStatistics;
 import org.eurekaj.api.enumtypes.UnitType;
 import org.eurekaj.api.enumtypes.ValueType;
 import org.eurekaj.api.service.EurekaJProcessIncomingStatisticsService;
@@ -31,9 +32,14 @@ public class AggregateLiveStatisticsService implements EurekaJProcessIncomingSta
             }
 
             if (eurekaJDBPluginService != null) {
+                String accountName = liveStatistics.getAccountName();
+                if (accountName == null) {
+                    accountName = "ACCOUNT";
+                }
                 eurekaJDBPluginService.getLiveStatissticsDao().storeIncomingStatistics(
-                        liveStatistics.getGuiPath(), liveStatistics.getTimeperiod(), value,
+                        liveStatistics.getGuiPath(), accountName, liveStatistics.getTimeperiod(), value,
                         ValueType.fromValue(liveStatistics.getValueType()), UnitType.fromValue(liveStatistics.getUnitType()));
+                eurekaJDBPluginService.getTreeMenuDao().persistTreeMenu(new BasicStatistics(liveStatistics.getGuiPath(), liveStatistics.getAccountName(), "Y"));
             }
         }
     }

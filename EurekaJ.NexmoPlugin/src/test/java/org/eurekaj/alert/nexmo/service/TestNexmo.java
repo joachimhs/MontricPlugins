@@ -62,8 +62,13 @@ public class TestNexmo {
 			public String getAlertName() {
 				return "Test Alert Name";
 			}
-			
-			@Override
+
+            @Override
+            public String getAccountName() {
+                return "ACCOUNT";
+            }
+
+            @Override
 			public long getAlertDelay() {
 				return 0;
 			}

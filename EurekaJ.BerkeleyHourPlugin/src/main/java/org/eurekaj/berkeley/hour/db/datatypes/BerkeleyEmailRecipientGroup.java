@@ -27,7 +27,7 @@ import org.eurekaj.api.datatypes.EmailRecipientGroup;
 
 @Entity(version=1)
 public class BerkeleyEmailRecipientGroup implements Comparable<BerkeleyEmailRecipientGroup>, EmailRecipientGroup {
-	@PrimaryKey private String emailRecipientGroupName;
+	@PrimaryKey private BerkeleyEmailRecipientGroupPk pk;
 	private String smtpServerhost;
 	private String smtpUsername;
 	private String smtpPassword;
@@ -36,7 +36,7 @@ public class BerkeleyEmailRecipientGroup implements Comparable<BerkeleyEmailReci
 	private List<String> emailRecipientList = new ArrayList<String>();
 
     public BerkeleyEmailRecipientGroup(EmailRecipientGroup emailRecipientGroup) {
-        this.emailRecipientGroupName = emailRecipientGroup.getEmailRecipientGroupName();
+        this.pk = new BerkeleyEmailRecipientGroupPk(emailRecipientGroup.getEmailRecipientGroupName(), emailRecipientGroup.getAccountName());
         this.smtpServerhost = emailRecipientGroup.getSmtpServerhost();
         this.smtpUsername = emailRecipientGroup.getSmtpUsername();
         this.smtpPassword = emailRecipientGroup.getSmtpPassword();
@@ -50,28 +50,36 @@ public class BerkeleyEmailRecipientGroup implements Comparable<BerkeleyEmailReci
 	}
 	
 	public String getEmailRecipientGroupName() {
-		return emailRecipientGroupName;
+		return pk.getEmailRecipientGroupName();
 	}
-
-
 
 	public void setEmailRecipientGroupName(String emailRecipientGroupName) {
-		this.emailRecipientGroupName = emailRecipientGroupName;
+		this.pk.setEmailRecipientGroupName(emailRecipientGroupName);
 	}
 
+    public String getAccountName() {
+        return this.pk.getAccountName();
+    }
 
+    public void setAccountName(String accountName) {
+        this.pk.setAccountName(accountName);
+    }
 
-	public String getSmtpServerhost() {
+    public BerkeleyEmailRecipientGroupPk getPk() {
+        return pk;
+    }
+
+    public void setPk(BerkeleyEmailRecipientGroupPk pk) {
+        this.pk = pk;
+    }
+
+    public String getSmtpServerhost() {
 		return smtpServerhost;
 	}
-
-
 
 	public void setSmtpServerhost(String smtpServerhost) {
 		this.smtpServerhost = smtpServerhost;
 	}
-
-
 
 	public String getSmtpUsername() {
 		return smtpUsername;

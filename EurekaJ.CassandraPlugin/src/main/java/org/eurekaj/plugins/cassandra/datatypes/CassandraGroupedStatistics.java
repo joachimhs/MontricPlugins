@@ -3,7 +3,6 @@ package org.eurekaj.plugins.cassandra.datatypes;
 import org.eurekaj.api.datatypes.GroupedStatistics;
 
 import java.util.List;
-import java.util.jar.Attributes;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,6 +13,7 @@ import java.util.jar.Attributes;
  */
 public class CassandraGroupedStatistics implements Comparable<GroupedStatistics>, GroupedStatistics {
     private String name;
+    private String accountName;
 	private List<String> groupedPathList;
 
     public CassandraGroupedStatistics(GroupedStatistics groupedStatistics) {
@@ -27,6 +27,14 @@ public class CassandraGroupedStatistics implements Comparable<GroupedStatistics>
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     public List<String> getGroupedPathList() {

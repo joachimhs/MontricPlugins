@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Log4j Configuration                                                  -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+
+   <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"> 
+    <param name="Target" value="System.out"/> 
+    <layout class="org.apache.log4j.PatternLayout"> 
+      <param name="ConversionPattern" value="%d{HH:mm:ss,SSS} %-5p [%c{1}] %m%n"/> 
+    </layout> 
+  </appender>
+  	
+   <logger name="org.eurekaj.manager.plugin">
+      <level value="debug"/>
+	</logger>
+	
+	<logger name="org.apache.cassandra">
+		<level value="error"/>
+	</logger>
+	
+	
+	<logger name="org.eurekaj">
+      <level value="debug"/>
+	</logger>
+	  
+	<logger name="org.eurekaj.alert">
+		<level value="debug" />
+	</logger>
+	
+	<logger name="org.eurekaj.manager.task">
+		<level value="debug" />
+	</logger>
+ 
+	<logger name="org.eurekaj.manager.json.BuildJsonObjectsUtil">
+		<level value="debug" />
+	</logger>
+
+   <root>
+      <priority value="INFO"/>
+	   <appender-ref ref="STDOUT"/>
+   </root>
+
+</log4j:configuration>

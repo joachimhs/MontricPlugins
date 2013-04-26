@@ -19,7 +19,6 @@
 package org.eurekaj.berkeley.hour.db.dao;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -38,22 +37,22 @@ import com.sleepycat.persist.PrimaryIndex;
 
 public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
 	private BerkeleyDbEnv dbEnvironment;
-	private PrimaryIndex<String, BerkeleyTreeMenuNode> treeMenuPrimaryIdx;
+	private PrimaryIndex<BerkeleyStatsticsPk, BerkeleyStatistics> treeMenuPrimaryIdx;
 	//statIndex = db.<BerkeleyLiveStatistics>createMultidimensionalIndex(BerkeleyLiveStatistics.class, new String[] {"guiPath", "timeperiod"}, true);
 	private PrimaryIndex<BerkeleyLiveStatisticsPk, BerkeleyLiveStatistics> liveStatPrimaryIdx;
     private SecondaryIndex<Long, BerkeleyLiveStatisticsPk, BerkeleyLiveStatistics> liveStatTimeperiodIdx;
     
-    private PrimaryIndex<String, MetricHour> metricHourPrimaryIdx;
-    private SecondaryIndex<Long, String, MetricHour> metricHourTimeperiodIdx;
+    private PrimaryIndex<MetricHourPk, MetricHour> metricHourPrimaryIdx;
+    private SecondaryIndex<MetricHourPk, MetricHourPk, MetricHour> metricHourTimeperiodIdx;
 
     public BerkeleyTreeMenuDao(BerkeleyDbEnv dbEnvironment) {
         this.dbEnvironment = dbEnvironment;
-        treeMenuPrimaryIdx = this.dbEnvironment.getTreeMenuStore().getPrimaryIndex(String.class, BerkeleyTreeMenuNode.class);
+        treeMenuPrimaryIdx = this.dbEnvironment.getTreeMenuStore().getPrimaryIndex(BerkeleyStatsticsPk.class, BerkeleyStatistics.class);
 		liveStatPrimaryIdx = this.dbEnvironment.getLiveStatisticsStore().getPrimaryIndex(BerkeleyLiveStatisticsPk.class, BerkeleyLiveStatistics.class);
         liveStatTimeperiodIdx = this.dbEnvironment.getLiveStatisticsStore().getSecondaryIndex(liveStatPrimaryIdx, Long.class, "secondaryTimeperiod");
         
-        metricHourPrimaryIdx = this.dbEnvironment.getMetricHourStore().getPrimaryIndex(String.class, MetricHour.class);
-        metricHourTimeperiodIdx = this.dbEnvironment.getMetricHourStore().getSecondaryIndex(metricHourPrimaryIdx, Long.class, "hoursSince1970");
+        metricHourPrimaryIdx = this.dbEnvironment.getMetricHourStore().getPrimaryIndex(MetricHourPk.class, MetricHour.class);
+        metricHourTimeperiodIdx = this.dbEnvironment.getMetricHourStore().getSecondaryIndex(metricHourPrimaryIdx, MetricHourPk.class, "hoursSince1970");
     }
     
     public static void main(String[] args) {
@@ -65,13 +64,28 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
     }
 
     @Override
-    public void deleteLiveStatisticsBetween(String guiPath, Long fromTimeperiod, Long toTimeperiod) {
-        List<LiveStatistics> delStats = getLiveStatistics(guiPath, fromTimeperiod, toTimeperiod);
+    public void deleteLiveStatisticsBetween(String guiPath, String accountName, Long fromTimeperiod, Long toTimeperiod) {
+        List<LiveStatistics> delStats = getLiveStatistics(guiPath, accountName, fromTimeperiod, toTimeperiod);
 
         //Strore NULL instead of value
         for (LiveStatistics delStat : delStats) {
-            storeIncomingStatistics(delStat.getGuiPath(), delStat.getTimeperiod(), null, ValueType.fromValue(delStat.getValueType()), UnitType.fromValue(delStat.getUnitType()));
+            storeIncomingStatistics(delStat.getGuiPath(), delStat.getAccountName(), delStat.getTimeperiod(), null, ValueType.fromValue(delStat.getValueType()), UnitType.fromValue(delStat.getUnitType()));
         }
+    }
+
+    @Override
+    public void markLiveStatisticsAsCalculated(String guiPath, String accountName, String timeperiod) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void markLiveStatisticsAsCalculated(String guiPath, String accountName, Long minTimeperiod, Long maxTimeperiod) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void deleteMarkedLiveStatistics() {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private List<LiveStatistics> createLivestatisticsFromMetricHour(MetricHour metricHour, Integer minTimeperiodWithinTheHour, Integer maxTimeperiodWithinTheHour, Long hoursSince1970) {
@@ -91,7 +105,7 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
     }
 
     @Override
-	public List<LiveStatistics> getLiveStatistics(String guiPath,
+	public List<LiveStatistics> getLiveStatistics(String guiPath, String accountName,
 			Long minTimeperiod, Long maxTimeperiod) {
     	
     	Long fromHoursSince1970 = minTimeperiod / 240;
@@ -101,9 +115,10 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
 
     	for (Long index = fromHoursSince1970; index <= toHoursSince1970; index++) {
     		//Iterate over all hours to gather stats from
-    		MetricHour metricHour = metricHourPrimaryIdx.get(index + ";" + guiPath);
+            MetricHourPk pk = new MetricHourPk(guiPath, accountName, index);
+    		MetricHour metricHour = metricHourPrimaryIdx.get(pk);
     		if (metricHour == null) {
-    			metricHour = new MetricHour(index + ";" + guiPath);
+    			metricHour = new MetricHour(guiPath, accountName, index);
     		}
     		
     		//If this is the first hour, start from the correct 15-second timeslot within the hour
@@ -125,11 +140,11 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
 	}
 
     @Override
-	public List<TreeMenuNode> getTreeMenu() {
-		List<TreeMenuNode> retList = new ArrayList<TreeMenuNode>();
-		EntityCursor<BerkeleyTreeMenuNode> pi_cursor = treeMenuPrimaryIdx.entities();
+	public List<Statistics> getTreeMenu(String accountName) {
+		List<Statistics> retList = new ArrayList<Statistics>();
+		EntityCursor<BerkeleyStatistics> pi_cursor = treeMenuPrimaryIdx.entities();
 		try {
-		    for (BerkeleyTreeMenuNode node : pi_cursor) {
+		    for (BerkeleyStatistics node : pi_cursor) {
 		        retList.add(node);
 		    }
 		// Always make sure the cursor is closed when we are done with it.
@@ -140,17 +155,22 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
 	}
 
     @Override
-	public BerkeleyTreeMenuNode getTreeMenu(String guiPath) {
-		return treeMenuPrimaryIdx.get(guiPath);
+	public BerkeleyStatistics getTreeMenu(String guiPath, String accountName) {
+        BerkeleyStatsticsPk pk = new BerkeleyStatsticsPk(guiPath, accountName);
+		return treeMenuPrimaryIdx.get(pk);
 	}
 
-
+    @Override
+    public void persistTreeMenu(Statistics statistics) {
+		treeMenuPrimaryIdx.put(new BerkeleyStatistics(statistics));    	
+    }
 	
-	private BerkeleyTreeMenuNode updateTreeMenu(String guiPath, boolean hasValueInformation) {
-		BerkeleyTreeMenuNode treeMenu = treeMenuPrimaryIdx.get(guiPath);
+	private BerkeleyStatistics updateTreeMenu(String guiPath, String accountName, boolean hasValueInformation) {
+		BerkeleyStatsticsPk pk = new BerkeleyStatsticsPk(guiPath, accountName);
+		BerkeleyStatistics treeMenu = treeMenuPrimaryIdx.get(pk);
 		if (treeMenu == null) {
 			//Create new TreeMenu at guiPath
-			treeMenu = new BerkeleyTreeMenuNode(guiPath, "Y");
+			treeMenu = new BerkeleyStatistics(guiPath, accountName, "Y");
 		} else {
 			//Update treeMenu at guiPath
 			treeMenu.setNodeLive("Y");
@@ -160,24 +180,25 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
 			treeMenu.setGuiPath(guiPath);
 		}
 		
-		treeMenuPrimaryIdx.put(treeMenu);
+		persistTreeMenu(treeMenu);
 		
 		return treeMenu;
 	}
 
 
     @Override
-    public void storeIncomingStatistics(String guiPath, Long timeperiod, String value, ValueType valueType, UnitType unitType) {		
-		BerkeleyTreeMenuNode treeMenu = updateTreeMenu(guiPath, value != null);
+    public void storeIncomingStatistics(String guiPath, String accountName, Long timeperiod, String value, ValueType valueType, UnitType unitType) {
+		BerkeleyStatistics treeMenu = updateTreeMenu(guiPath, accountName, value != null);
 		Double valueDouble = LiveStatisticsUtil.parseDouble(value);
 		Double calculatedValue = LiveStatisticsUtil.calculateValueBasedOnUnitType(valueDouble, unitType);
 		
-		int hoursSince1970 = timeperiod.intValue() / 240;
+		long hoursSince1970 = timeperiod.intValue() / 240;
 		int fifteenSecondPeriodsSinceStartOfHour = LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(timeperiod * 15);
-		
-		MetricHour mh = metricHourPrimaryIdx.get(hoursSince1970 + ";" + guiPath);
+
+        MetricHourPk pk = new MetricHourPk(guiPath, accountName, hoursSince1970);
+		MetricHour mh = metricHourPrimaryIdx.get(pk);
 		if (mh == null) {
-			mh = new MetricHour(hoursSince1970 + ";" + guiPath);
+			mh = new MetricHour(guiPath, accountName, hoursSince1970);
 		}
         
         if (mh.getValueType() == null) {
@@ -199,19 +220,28 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
 		
 		metricHourPrimaryIdx.put(mh);
 	}
-	
+
     @Override
-    public void deleteLiveStatisticsOlderThan(Date date) {
+    public void storeIncomingStatistics(List<LiveStatistics> liveStatisticsList) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void deleteLiveStatisticsOlderThan(Date date, String accountName) {
         Long hoursSince1970 = date.getTime() / 3600000;
 
-        BerkeleyLiveStatisticsPk fromKey = new BerkeleyLiveStatisticsPk();
-		fromKey.setTimeperiod(hoursSince1970);
+        MetricHourPk fromKey = new MetricHourPk();
+		fromKey.setHoursSince1970(0l);
+        fromKey.setAccountName(accountName);
 
-        EntityCursor<MetricHour> pi_cursor = metricHourTimeperiodIdx.entities(
-				0l, true, hoursSince1970, false);
+        MetricHourPk toKey = new MetricHourPk();
+        fromKey.setHoursSince1970(hoursSince1970);
+        fromKey.setAccountName(accountName);
+
+        EntityCursor<MetricHour> pi_cursor = metricHourTimeperiodIdx.entities(fromKey, true, toKey, false);
 		try {
 			for (MetricHour node : pi_cursor) {
-				metricHourPrimaryIdx.delete(node.getKey());
+				metricHourPrimaryIdx.delete(node.getPk());
 			}
 			// Always make sure the cursor is closed when we are done with it.
 		} finally {
@@ -220,12 +250,12 @@ public class BerkeleyTreeMenuDao implements TreeMenuDao, LiveStatisticsDao {
     }
 
     @Override
-    public void deleteTreeMenu(String guiPath) {
-		EntityCursor<BerkeleyTreeMenuNode> pi_cursor = treeMenuPrimaryIdx.entities();
+    public void deleteTreeMenu(String guiPath, String accountName) {
+		EntityCursor<BerkeleyStatistics> pi_cursor = treeMenuPrimaryIdx.entities();
 		try {
-		    for (BerkeleyTreeMenuNode node : pi_cursor) {
+		    for (BerkeleyStatistics node : pi_cursor) {
 		        if (node.getGuiPath().startsWith(guiPath) || node.getGuiPath().equals(guiPath)) {
-		        	treeMenuPrimaryIdx.delete(node.getGuiPath());
+		        	treeMenuPrimaryIdx.delete(node.getPk());
 		        }
 		    }
 		// Always make sure the cursor is closed when we are done with it.

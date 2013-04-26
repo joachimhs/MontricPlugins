@@ -28,18 +28,19 @@ import org.eurekaj.berkeley.hour.db.datatypes.BerkeleyEmailRecipientGroup;
 
 import com.sleepycat.persist.EntityCursor;
 import com.sleepycat.persist.PrimaryIndex;
+import org.eurekaj.berkeley.hour.db.datatypes.BerkeleyEmailRecipientGroupPk;
 
 public class BerkeleySmtpDaoImpl implements SmtpDao {
 	private BerkeleyDbEnv dbEnvironment;
-	private PrimaryIndex<String, BerkeleyEmailRecipientGroup> emailRecipientGroupPrimaryIdx;
+	private PrimaryIndex<BerkeleyEmailRecipientGroupPk, BerkeleyEmailRecipientGroup> emailRecipientGroupPrimaryIdx;
 	
 	public BerkeleySmtpDaoImpl(BerkeleyDbEnv dbEnvironment) {
         this.dbEnvironment = dbEnvironment;
-		emailRecipientGroupPrimaryIdx = this.dbEnvironment.getSmtpServerStore().getPrimaryIndex(String.class, BerkeleyEmailRecipientGroup.class);
+		emailRecipientGroupPrimaryIdx = this.dbEnvironment.getSmtpServerStore().getPrimaryIndex(BerkeleyEmailRecipientGroupPk.class, BerkeleyEmailRecipientGroup.class);
 	}
 
 	@Override
-	public List<EmailRecipientGroup> getEmailRecipientGroups() {
+	public List<EmailRecipientGroup> getEmailRecipientGroups(String accountName) {
 		List<EmailRecipientGroup> retList = new ArrayList<EmailRecipientGroup>();
 		EntityCursor<BerkeleyEmailRecipientGroup> pi_cursor = emailRecipientGroupPrimaryIdx.entities();
 		try {
@@ -54,8 +55,9 @@ public class BerkeleySmtpDaoImpl implements SmtpDao {
 	}
 	
 	@Override
-	public EmailRecipientGroup getEmailRecipientGroup(String groupName) {
-		BerkeleyEmailRecipientGroup server = emailRecipientGroupPrimaryIdx.get(groupName);
+	public EmailRecipientGroup getEmailRecipientGroup(String groupName, String accountName) {
+        BerkeleyEmailRecipientGroupPk pk = new BerkeleyEmailRecipientGroupPk(groupName, accountName);
+		BerkeleyEmailRecipientGroup server = emailRecipientGroupPrimaryIdx.get(pk);
 		return server;
 	}
 	
@@ -65,7 +67,7 @@ public class BerkeleySmtpDaoImpl implements SmtpDao {
 
         if (emailRecipientGroup.getSmtpPassword() == null || emailRecipientGroup.getSmtpPassword().length() == 0) {
             //Do not overwrite password with an empty one, use the password stored in the database (if any)
-            EmailRecipientGroup oldEmailGroup = getEmailRecipientGroup(emailRecipientGroup.getEmailRecipientGroupName());
+            EmailRecipientGroup oldEmailGroup = getEmailRecipientGroup(emailRecipientGroup.getEmailRecipientGroupName(), emailRecipientGroup.getAccountName());
             if (oldEmailGroup != null) {
                 berkeleyEmailRecipientGroup.setSmtpPassword(oldEmailGroup.getSmtpPassword());
             }
@@ -75,11 +77,13 @@ public class BerkeleySmtpDaoImpl implements SmtpDao {
 	
 	@Override
 	public void deleteEmailRecipientGroup(EmailRecipientGroup emailRecipientGroup) {
-		emailRecipientGroupPrimaryIdx.delete(emailRecipientGroup.getEmailRecipientGroupName());		
+        BerkeleyEmailRecipientGroupPk pk = new BerkeleyEmailRecipientGroupPk(emailRecipientGroup.getEmailRecipientGroupName(), emailRecipientGroup.getAccountName());
+		emailRecipientGroupPrimaryIdx.delete(pk);
 	}
 
 	@Override
-	public void deleteEmailRecipientGroup(String groupName) {
-		emailRecipientGroupPrimaryIdx.delete(groupName);
+	public void deleteEmailRecipientGroup(String groupName, String accountName) {
+        BerkeleyEmailRecipientGroupPk pk = new BerkeleyEmailRecipientGroupPk(groupName, accountName);
+		emailRecipientGroupPrimaryIdx.delete(pk);
 	}
 }

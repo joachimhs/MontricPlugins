@@ -20,8 +20,6 @@ package org.eurekaj.berkeley.hour.db.datatypes;
 
 import com.sleepycat.persist.model.KeyField;
 import com.sleepycat.persist.model.Persistent;
-import com.sleepycat.persist.model.Relationship;
-import com.sleepycat.persist.model.SecondaryKey;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,10 +32,12 @@ import com.sleepycat.persist.model.SecondaryKey;
 public class BerkeleyTriggeredAlertPk {
     @KeyField(1) private String alertName;
     @KeyField(2) private Long timeperiod;
+    @KeyField(3) private String accountName;
 
-    public BerkeleyTriggeredAlertPk(String alertName, Long timeperiod) {
+    public BerkeleyTriggeredAlertPk(String alertName, Long timeperiod, String accountName) {
         this.alertName = alertName;
         this.timeperiod = timeperiod;
+        this.accountName = accountName;
     }
 
     public BerkeleyTriggeredAlertPk() {
@@ -57,5 +57,13 @@ public class BerkeleyTriggeredAlertPk {
 
     public void setTimeperiod(Long timeperiod) {
         this.timeperiod = timeperiod;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 }

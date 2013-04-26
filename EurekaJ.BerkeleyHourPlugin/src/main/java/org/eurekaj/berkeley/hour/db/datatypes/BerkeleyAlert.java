@@ -23,13 +23,17 @@ import java.util.List;
 
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
+import com.sleepycat.persist.model.Relationship;
+import com.sleepycat.persist.model.SecondaryKey;
 import org.eurekaj.api.datatypes.Alert;
 import org.eurekaj.api.enumtypes.AlertStatus;
 import org.eurekaj.api.enumtypes.AlertType;
 
-@Entity(version=4)
+@Entity(version=5)
 public class BerkeleyAlert implements Comparable<BerkeleyAlert>, Alert {
-	@PrimaryKey private String alertName;
+    @PrimaryKey private BerkeleyAlertPk pk;
+    @SecondaryKey(relate = Relationship.MANY_TO_ONE)
+    private String accountName;
     private String guiPath;
 	private boolean activated;
 	private Double errorValue;
@@ -42,7 +46,8 @@ public class BerkeleyAlert implements Comparable<BerkeleyAlert>, Alert {
 
 
     public BerkeleyAlert(Alert alert) {
-        this.alertName = alert.getAlertName();
+        this.pk = new BerkeleyAlertPk(alert.getAlertName(), alert.getAccountName());
+        this.accountName = alert.getAccountName();
         this.guiPath = alert.getGuiPath();
         this.activated = alert.isActivated();
         this.errorValue = alert.getErrorValue();
@@ -59,11 +64,28 @@ public class BerkeleyAlert implements Comparable<BerkeleyAlert>, Alert {
 	}
 
     public String getAlertName() {
-        return alertName;
+        return pk.getAlertName();
     }
 
     public void setAlertName(String alertName) {
-        this.alertName = alertName;
+        pk.setAlertName(alertName);
+    }
+
+    public BerkeleyAlertPk getPk() {
+        return pk;
+    }
+
+    public void setPk(BerkeleyAlertPk pk) {
+        this.pk = pk;
+    }
+
+    public String getAccountName() {
+        return pk.getAccountName();
+    }
+
+    public void setAccountName(String accountName) {
+        pk.setAccountName(accountName);
+        this.accountName = accountName;
     }
 
     public String getGuiPath() {

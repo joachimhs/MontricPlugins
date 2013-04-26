@@ -27,34 +27,36 @@ import org.eurekaj.api.datatypes.GroupedStatistics;
 
 @Entity(version=3)
 public class BerkeleyGroupedStatistics implements Comparable<BerkeleyGroupedStatistics>, GroupedStatistics {
-	@PrimaryKey private String name;
+	@PrimaryKey private BerkeleyGroupedStatisticsPk pk;
 	private List<String> groupedPathList;
 
     public BerkeleyGroupedStatistics(GroupedStatistics groupedStatistics) {
-        this.name = groupedStatistics.getName();
+        this.pk = new BerkeleyGroupedStatisticsPk(groupedStatistics.getAccountName(), groupedStatistics.getName());
         this.groupedPathList = groupedStatistics.getGroupedPathList();
     }
 
 	public BerkeleyGroupedStatistics() {
 		groupedPathList = new ArrayList<String>();
 	}
-	
-	public BerkeleyGroupedStatistics(String name, List<String> groupedPathList) {
-		super();
-		this.name = name;
-		this.groupedPathList = groupedPathList;
-	}
+
 
 	public String getName() {
-		return name;
+		return this.pk.getName();
 	}
 	
 	public void setName(String name) {
-		this.name = name;
+		this.pk.setName(name);
 	}
 
+    public String getAccountName() {
+        return this.pk.getAccountName();
+    }
 
-	public List<String> getGroupedPathList() {
+    public void setAccountName(String accountName) {
+        this.pk.setAccountName(accountName);
+    }
+
+    public List<String> getGroupedPathList() {
 		return groupedPathList;
 	}
 

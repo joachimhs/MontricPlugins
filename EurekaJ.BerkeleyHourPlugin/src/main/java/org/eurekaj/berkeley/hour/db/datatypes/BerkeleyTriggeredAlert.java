@@ -43,6 +43,7 @@ public class BerkeleyTriggeredAlert implements TriggeredAlert {
         this.pk = new BerkeleyTriggeredAlertPk();
         this.pk.setAlertName(triggeredAlert.getAlertName());
         this.pk.setTimeperiod(triggeredAlert.getTimeperiod());
+        this.pk.setAccountName(triggeredAlert.getAccountName());
         this.errorValue = triggeredAlert.getErrorValue();
         this.warningValue = triggeredAlert.getWarningValue();
         this.alertValue = triggeredAlert.getAlertValue();
@@ -72,6 +73,14 @@ public class BerkeleyTriggeredAlert implements TriggeredAlert {
     @Override
     public String getAlertName() {
         return this.pk.getAlertName();
+    }
+
+    public String getAccountName() {
+        return this.pk.getAccountName();
+    }
+
+    public void setAccountName(String accountName) {
+        this.pk.setAccountName(accountName);
     }
 
     @Override

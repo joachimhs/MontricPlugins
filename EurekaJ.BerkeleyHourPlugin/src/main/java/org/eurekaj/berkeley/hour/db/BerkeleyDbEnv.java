@@ -28,10 +28,7 @@ import com.sleepycat.persist.StoreConfig;
 
 import org.apache.log4j.Logger;
 import org.eurekaj.api.dao.*;
-import org.eurekaj.berkeley.hour.db.dao.BerkeleyAlertDao;
-import org.eurekaj.berkeley.hour.db.dao.BerkeleyGroupedStatisticsDao;
-import org.eurekaj.berkeley.hour.db.dao.BerkeleySmtpDaoImpl;
-import org.eurekaj.berkeley.hour.db.dao.BerkeleyTreeMenuDao;
+import org.eurekaj.berkeley.hour.db.dao.*;
 import org.eurekaj.spi.db.EurekaJDBPluginService;
 
 public class BerkeleyDbEnv extends EurekaJDBPluginService {
@@ -47,12 +44,15 @@ public class BerkeleyDbEnv extends EurekaJDBPluginService {
     private EntityStore triggeredAlertStore;
 	private EntityStore logStore;
 	private EntityStore metricHourStore;
+    private EntityStore accountStore;
+    private EntityStore userStore;
 
     private AlertDao alertDao;
     private GroupedStatisticsDao groupedStatisticsDao;
     private LiveStatisticsDao liveStatisticsDao;
     private SmtpDao smtpDao;
     private TreeMenuDao treeMenuDao;
+    private AccountDao accountDao;
 	
 	public BerkeleyDbEnv() {
 
@@ -106,12 +106,15 @@ public class BerkeleyDbEnv extends EurekaJDBPluginService {
             logStore = new EntityStore(environment, "logStore", storeConfig);
             triggeredAlertStore = new EntityStore(environment, "TriggeredAlertStore", storeConfig);
             metricHourStore = new EntityStore(environment, "MetricStore", storeConfig);
+            accountStore = new EntityStore(environment, "AccountStore", storeConfig);
+            userStore = new EntityStore(environment, "UserStore", storeConfig);
 
             alertDao = new BerkeleyAlertDao(this);
             groupedStatisticsDao = new BerkeleyGroupedStatisticsDao(this);
             liveStatisticsDao = new BerkeleyTreeMenuDao(this);
             smtpDao = new BerkeleySmtpDaoImpl(this);
             treeMenuDao = new BerkeleyTreeMenuDao(this);
+            accountDao = new BerkeleyAccountDao(this);
         }
 	}
 
@@ -145,6 +148,11 @@ public class BerkeleyDbEnv extends EurekaJDBPluginService {
         return treeMenuDao;
     }
 
+    @Override
+    public AccountDao getAccountDao() {
+        return accountDao;
+    }
+
     public Environment getEnvironment() {
 		return environment;
 	}
@@ -173,7 +181,15 @@ public class BerkeleyDbEnv extends EurekaJDBPluginService {
 		return groupedStatisticsStore;
 	}
 
-	public EntityStore getLogStore() {
+    public EntityStore getAccountStore() {
+        return accountStore;
+    }
+
+    public EntityStore getUserStore() {
+        return userStore;
+    }
+
+    public EntityStore getLogStore() {
 		return logStore;
 	}
 
@@ -266,6 +282,24 @@ public class BerkeleyDbEnv extends EurekaJDBPluginService {
                 dbe.printStackTrace();
 			}
 		}
+
+        if (accountStore != null) {
+            try {
+                accountStore.close();
+            } catch (DatabaseException dbe) {
+                log.error("Error closing accountStore" + dbe.toString());
+                dbe.printStackTrace();
+            }
+        }
+
+        if (userStore != null) {
+            try {
+                userStore.close();
+            } catch (DatabaseException dbe) {
+                log.error("Error closing userStore" + dbe.toString());
+                dbe.printStackTrace();
+            }
+        }
 		
 		if (environment != null) {
             try {

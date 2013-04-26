@@ -14,10 +14,16 @@
 	<name>EurekaJ Plugins Parent</name>
 	<packaging>pom</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>14.0</version>
+        </dependency>
+    </dependencies>
 	<modules>
-		<module>EurekaJ.BerkeleyPlugin</module>
 		<module>EurekaJ.CassandraPlugin</module>
-		<module>EurekaJ.SimpleDBPlugin</module>
+		<module>EurekaJ.RiakPlugin</module>
 		<module>EurekaJ.NexmoPlugin</module>
 		<module>EurekaJ.BerkeleyHourPlugin</module>
 		<module>EurekaJ.AggregateLiveStatisticsPlugin</module>

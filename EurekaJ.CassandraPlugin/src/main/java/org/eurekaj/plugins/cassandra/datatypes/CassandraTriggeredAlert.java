@@ -11,6 +11,7 @@ import org.eurekaj.api.datatypes.TriggeredAlert;
  */
 public class CassandraTriggeredAlert implements Comparable<TriggeredAlert>, TriggeredAlert{
     private String alertName;
+    private String accountName;
     private Long timeperiod;
     private Double errorValue;
 	private Double warningValue;
@@ -32,6 +33,14 @@ public class CassandraTriggeredAlert implements Comparable<TriggeredAlert>, Trig
 
     public void setAlertName(String alertName) {
         this.alertName = alertName;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     public Long getTimeperiod() {
