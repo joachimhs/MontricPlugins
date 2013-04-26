@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>eurekaj.plugin.parent</artifactId>
-        <groupId>org.eurekaJ.plugins</groupId>
-        <version>1.1.0-SNAPSHOT</version>
+        <artifactId>montric.plugin.parent</artifactId>
+        <groupId>org.montric.plugins</groupId>
+        <version>0.9-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>EurekaJ.DatabaseTest</artifactId>
+    <artifactId>Montric.DatabaseTest</artifactId>
     <build>
         <plugins>
             <plugin>
@@ -36,40 +36,19 @@
             <version>2.1</version>
         </dependency>
         <dependency>
-            <groupId>org.eurekaJ</groupId>
-            <artifactId>eurekaJ.api</artifactId>
+            <groupId>org.montric</groupId>
+            <artifactId>montric.api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eurekaJ.plugin</groupId>
-            <artifactId>berkeleyPlugin</artifactId>
+            <groupId>org.montric.plugin</groupId>
+            <artifactId>levelDBPlugin</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eurekaJ.plugin</groupId>
-            <artifactId>berkeleyHourPlugin</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eurekaJ.plugin</groupId>
-            <artifactId>cassandraPlugin</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eurekaJ.plugin</groupId>
+            <groupId>org.montric.plugin</groupId>
             <artifactId>riakPlugin</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.cassandraunit</groupId>
-            <artifactId>cassandra-unit</artifactId>
-            <version>1.1.2.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cassandra</groupId>
-            <artifactId>cassandra-all</artifactId>
-            <version>1.2.1</version>
         </dependency>
     </dependencies>
 </project>

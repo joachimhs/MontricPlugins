@@ -113,12 +113,7 @@ public class RiakLiveStatisticsDao implements LiveStatisticsDao {
 
     @Override
     public void storeIncomingStatistics(List<LiveStatistics> liveStatisticsList) {
-        int index = 0;
         for (LiveStatistics ls : liveStatisticsList) {
-            //if (index % 50 == 0) {
-            //    logger.info("Calcluated " + index + " Live Statistics for storage");
-            //}
-
             long hoursSince1970 = ls.getTimeperiod() / 240;
             int fifteenSecondPeriodsSinceStartOfHour = LiveStatisticsUtil.getFifteensecondTimeperiodsSinceStartOfHour(ls.getTimeperiod() * 15);
             Double calculatedValue = LiveStatisticsUtil.calculateValueBasedOnUnitType(ls.getValue(), UnitType.fromValue(ls.getUnitType()));
@@ -146,8 +141,6 @@ public class RiakLiveStatisticsDao implements LiveStatisticsDao {
             if (!wasInStoreHash) {
                 metricHoursToStoreHash.put(ls.getAccountName() + ";" + ls.getGuiPath() + ";" + hoursSince1970, mhToStore);
             }
-
-            index++;
         }
 
         persistRecentMetricHours();

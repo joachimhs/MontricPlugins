@@ -84,8 +84,6 @@ public class RiakEmailRecipientGroupDao implements SmtpDao {
         } catch (RiakException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-	}
+		}}
 
 }

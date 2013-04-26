@@ -20,6 +20,7 @@ import org.eurekaj.api.enumtypes.AlertType;
 import org.eurekaj.api.enumtypes.UnitType;
 import org.eurekaj.api.enumtypes.ValueType;
 import org.eurekaj.api.util.ListToString;
+import org.eurekaj.plugins.leveldb.LevelDBEnv;
 import org.eurekaj.plugins.riak.RiakEnv;
 import org.eurekaj.spi.db.EurekaJDBPluginService;
 import org.joda.time.DateTime;
@@ -38,8 +39,8 @@ import java.util.List;
  * Time: 11:15 AM
  * To change this template use File | Settings | File Templates.
  */
-public class TestRiakStorage {
-    private static Logger logger = Logger.getLogger(TestRiakStorage.class.getName());
+public class TestLevelDBStorage {
+    private static Logger logger = Logger.getLogger(TestLevelDBStorage.class.getName());
 
     private EurekaJDBPluginService newEnv;
 
@@ -56,7 +57,8 @@ public class TestRiakStorage {
 
     @Before
     public void setup() {
-        newEnv = new RiakEnv();
+        newEnv = new LevelDBEnv();
+        System.setProperty("eurekaj.db.absPath", "/srv/eurekaj/eurekajDataTest");
         /*System.setProperty("eurekaj.db.type", "BerkeleyHour");
         System.setProperty("eurekaj.db.absPath", "/srv/eurekaj/eurekajDataTest");
         newEnv = new BerkeleyDbEnv();*/
@@ -78,10 +80,10 @@ public class TestRiakStorage {
 
     @Test
     public void testStoringMetricHour() {
-        DateTime fromDate = new DateTime(2012, 04, 18, 9, 0, 0);
-        DateTime toDate = new DateTime(2012, 04, 18, 12, 0, 0);
-        //DateTime fromDate = new DateTime(2010, 12, 15, 0, 0, 0);
-        //DateTime toDate = new DateTime(2010, 12, 31, 23, 59, 59);
+        //DateTime fromDate = new DateTime(2012, 04, 18, 9, 0, 0);
+        //DateTime toDate = new DateTime(2012, 04, 18, 12, 0, 0);
+        DateTime fromDate = new DateTime(2010, 01, 01, 0, 0, 0);
+        DateTime toDate = new DateTime(2010, 12, 31, 23, 59, 59);
 
         Long from15SecPeriod = fromDate.getMillis() / 15000;
         Long to15SecPeriod = toDate.getMillis() / 15000;
@@ -98,7 +100,7 @@ public class TestRiakStorage {
             }
 
             if (index > 0 && index % 500 == 0) {
-               // logger.info("stored 100 keys for: " + index + " 15 second time periods. Now at: " + index + " of " + numMetrics + " hours");
+                logger.info("stored 500 keys for: " + index + " 15 second time periods. Now at: " + index + " of " + numMetrics + " hours");
             }
             index++;
         }
@@ -112,6 +114,7 @@ public class TestRiakStorage {
         System.out.println("Stored " + index + " values in the database");
 
         int expectedNumMetrics = (4 * 60 * 3) + 1; //3 hours worth of metrics
+        expectedNumMetrics = (4 * 60 * 24 * 365); //31 days worth of metrics
         List<LiveStatistics> statList = newEnv.getLiveStatissticsDao().getLiveStatistics("Test:A", "ACCOUNT NAME", from15SecPeriod, to15SecPeriod);
 
         Assert.assertEquals("Expecting " + expectedNumMetrics + " LiveStatistcs back from DB", expectedNumMetrics, statList.size());
@@ -212,10 +215,10 @@ public class TestRiakStorage {
 
         alertList = newEnv.getAlertDao().getAlerts("ACCOUNT NAME");
         Assert.assertNotNull("Expecting a not null alert list!", alertList);
-        Assert.assertEquals(new Integer(1), new Integer(alertList.size()));
+        Assert.assertEquals(new Integer(0), new Integer(alertList.size()));
         alertList = newEnv.getAlertDao().getAlerts("ACCOUNT TWO");
         Assert.assertNotNull("Expecting a not null alert list!", alertList);
-        Assert.assertEquals(new Integer(1), new Integer(alertList.size()));
+        Assert.assertEquals(new Integer(0), new Integer(alertList.size()));
     }
 
     @Test
