@@ -64,7 +64,7 @@ public class LevelDBLiveStatisticsDao implements LiveStatisticsDao {
             storedMetricHour.getMetrics()[fifteenSecondPeriodsSinceStartOfHour] = LiveStatisticsUtil.calculateValueBasedOnValueType(prevValue, calculatedValue, valueType);
         }
         
-        db.put(bytes(liveStatsBucketKey + accountName + ";" + hoursSince1970 + guiPath), bytes(gson.toJson(storedMetricHour)));
+        db.put(bytes(liveStatsBucketKey + accountName + ";" + hoursSince1970 + ";" + guiPath), bytes(gson.toJson(storedMetricHour)));
 	}
 
 	@Override
@@ -167,7 +167,7 @@ public class LevelDBLiveStatisticsDao implements LiveStatisticsDao {
         for (int index = minTimeperiodWithinTheHour; index <= maxTimeperiodWithinTheHour; index++) {
             Long timeperiod = (hoursSince1970 * 240) + index;
 
-            //logger.info("Creating LiveStats for: " + metricHour.getId() + " with value: " + metricHour.getValueAt(index));
+            //logger.info("Creating LiveStats for: " + metricHour.getGuiPath() + " at timeperiod: " + metricHour.getHoursSince1970() + " and index: " + index + " with value: " + metricHour.getMetrics()[index]);
             retList.add(new BasicLiveStatistics(metricHour.getGuiPath(), metricHour.getAccountName(), timeperiod, metricHour.getMetrics()[index], metricHour.getValueType(), metricHour.getUnitType()));
         }
 

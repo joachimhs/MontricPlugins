@@ -47,7 +47,7 @@ public class LevelDBEmailRecipientGroupDao implements SmtpDao {
 
 	@Override
 	public void persistEmailRecipientGroup(EmailRecipientGroup emailRecipientGroup) {
-		db.put(bytes(emailGroupBucketKey + emailRecipientGroup.getAccountName() + ";" + emailRecipientGroup.getEmailRecipientGroupName()), bytes(gson.toJson(emailRecipientGroup)));
+		db.put(bytes(emailGroupBucketKey + emailRecipientGroup.getAccountName() + ";" + emailRecipientGroup.getEmailRecipientGroupName()), bytes(gson.toJson(new BasicEmailRecipientGroup(emailRecipientGroup))));
 	}
 
 	@Override

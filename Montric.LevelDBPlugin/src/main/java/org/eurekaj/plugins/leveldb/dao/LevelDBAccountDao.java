@@ -47,7 +47,7 @@ public class LevelDBAccountDao implements AccountDao {
 
 	@Override
 	public void persistAccount(Account account) {
-		db.put(bytes(accountBucketKey + account.getAccountName()), bytes(gson.toJson(account)));
+		db.put(bytes(accountBucketKey + account.getAccountName()), bytes(gson.toJson(new BasicAccount(account))));
 	}
 
 	@Override

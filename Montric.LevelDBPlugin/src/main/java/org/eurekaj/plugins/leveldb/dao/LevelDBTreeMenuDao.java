@@ -51,7 +51,7 @@ public class LevelDBTreeMenuDao implements TreeMenuDao {
 
 	@Override
 	public void persistTreeMenu(Statistics statistics) {
-		db.put(bytes(statsBucketKey + statistics.getAccountName() + ";" + statistics.getGuiPath()), bytes(gson.toJson(statistics)));		
+		db.put(bytes(statsBucketKey + statistics.getAccountName() + ";" + statistics.getGuiPath()), bytes(gson.toJson(new BasicStatistics(statistics))));		
 	}
 
 }

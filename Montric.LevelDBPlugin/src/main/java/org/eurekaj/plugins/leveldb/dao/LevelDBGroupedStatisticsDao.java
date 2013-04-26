@@ -26,7 +26,7 @@ public class LevelDBGroupedStatisticsDao implements GroupedStatisticsDao {
 
 	@Override
 	public void persistGroupInstrumentation(GroupedStatistics groupedStatistics) {
-		db.put(bytes(groupedStatsBucketKey + groupedStatistics.getAccountName() + ";" + groupedStatistics.getName()), bytes(gson.toJson(groupedStatistics)));
+		db.put(bytes(groupedStatsBucketKey + groupedStatistics.getAccountName() + ";" + groupedStatistics.getName()), bytes(gson.toJson(new BasicGroupedStatistics(groupedStatistics))));
 	}
 
 	@Override

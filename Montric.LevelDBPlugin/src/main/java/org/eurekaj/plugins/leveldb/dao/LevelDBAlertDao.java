@@ -29,7 +29,7 @@ public class LevelDBAlertDao implements AlertDao {
 
 	@Override
 	public void persistAlert(Alert alert) {
-		db.put(bytes(alertBucketKey + alert.getAccountName() + ";" + alert.getAlertName()), bytes(gson.toJson(alert)));
+		db.put(bytes(alertBucketKey + alert.getAccountName() + ";" + alert.getAlertName()), bytes(gson.toJson(new BasicAlert(alert))));
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class LevelDBAlertDao implements AlertDao {
 	@Override
 	public void persistTriggeredAlert(TriggeredAlert triggeredAlert) {
 		db.put(bytes(triggeredAlertlertBucketKey + triggeredAlert.getAccountName() + ";" + triggeredAlert.getAlertName() + ";" + triggeredAlert.getTimeperiod()),
-				bytes(gson.toJson(triggeredAlert)));
+				bytes(gson.toJson(new BasicTriggeredAlert(triggeredAlert))));
 	}
 
 	@Override
