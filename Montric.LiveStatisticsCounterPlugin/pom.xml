@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>eurekaj.plugin.parent</artifactId>
-        <groupId>org.eurekaJ.plugins</groupId>
-        <version>1.1.0-SNAPSHOT</version>
+        <artifactId>montric.plugin.parent</artifactId>
+        <groupId>org.montric.plugins</groupId>
+        <version>0.9-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>EurekaJ Live Statistics Counter Plugin</name>
-    <groupId>org.eurekaJ.plugin</groupId>
+    <name>Montric Live Statistics Counter Plugin</name>
+    <groupId>org.montric.plugin</groupId>
     <artifactId>liveStatisticsCounterPlugin</artifactId>
 
     <build>
@@ -36,8 +36,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.eurekaJ</groupId>
-            <artifactId>eurekaJ.api</artifactId>
+            <groupId>org.montric</groupId>
+            <artifactId>montric.api</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

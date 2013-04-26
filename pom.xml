@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-        <artifactId>eurekaJ.parent</artifactId>
-        <groupId>org.eurekaJ</groupId>
-        <version>1.1.0-SNAPSHOT</version>
+        <artifactId>montric.parent</artifactId>
+        <groupId>org.montric</groupId>
+        <version>0.9-SNAPSHOT</version>
     </parent>
     
-    <groupId>org.eurekaJ.plugins</groupId>
-	<artifactId>eurekaj.plugin.parent</artifactId>
+    <groupId>org.montric.plugins</groupId>
+	<artifactId>montric.plugin.parent</artifactId>
 	
 	<name>EurekaJ Plugins Parent</name>
 	<packaging>pom</packaging>
@@ -22,12 +22,9 @@
         </dependency>
     </dependencies>
 	<modules>
-		<module>EurekaJ.CassandraPlugin</module>
-		<module>EurekaJ.RiakPlugin</module>
-		<module>EurekaJ.NexmoPlugin</module>
-		<module>EurekaJ.BerkeleyHourPlugin</module>
-		<module>EurekaJ.AggregateLiveStatisticsPlugin</module>
-		<module>EurekaJ.LiveStatisticsCounterPlugin</module>
-        <module>EurekaJ.DatabaseTest</module>
+		<module>Montric.RiakPlugin</module>
+		<module>Montric.NexmoPlugin</module>
+		<module>Montric.AggregateLiveStatisticsPlugin</module>
+		<module>Montric.LiveStatisticsCounterPlugin</module>
     </modules>
 </project>
