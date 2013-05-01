@@ -33,9 +33,7 @@ public class AggregateLiveStatisticsService implements EurekaJProcessIncomingSta
 
             if (eurekaJDBPluginService != null) {
                 String accountName = liveStatistics.getAccountName();
-                if (accountName == null) {
-                    accountName = "ACCOUNT";
-                }
+                
                 eurekaJDBPluginService.getLiveStatissticsDao().storeIncomingStatistics(
                         liveStatistics.getGuiPath(), accountName, liveStatistics.getTimeperiod(), value,
                         ValueType.fromValue(liveStatistics.getValueType()), UnitType.fromValue(liveStatistics.getUnitType()));

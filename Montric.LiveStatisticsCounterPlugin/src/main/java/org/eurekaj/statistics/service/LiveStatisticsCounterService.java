@@ -28,8 +28,10 @@ public class LiveStatisticsCounterService implements EurekaJProcessIncomingStati
     public void processStatistics(List<LiveStatistics> liveStatisticsList) {
         Hashtable<String, AtomicInteger> statHash = new Hashtable<String, AtomicInteger>();
         Long timePeriod = 0l;
+        String accountName = null;
 
         for (LiveStatistics liveStatistics : liveStatisticsList) {
+        	accountName = liveStatistics.getAccountName();
             if (timePeriod.longValue() == 0l) {
                 timePeriod = liveStatistics.getTimeperiod();
             }
@@ -56,7 +58,7 @@ public class LiveStatisticsCounterService implements EurekaJProcessIncomingStati
             if (eurekaJDBPluginService != null) {
                 eurekaJDBPluginService.getLiveStatissticsDao().storeIncomingStatistics(
                         "AgentStats:" + key + ":Incoming Stat Count",
-                        "ACCOUNT",
+                        accountName,
                         timePeriod,
                         "" + count.get(),
                         ValueType.AGGREGATE,
