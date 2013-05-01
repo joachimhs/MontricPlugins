@@ -40,6 +40,7 @@ import java.util.List;
  * Time: 11:15 AM
  * To change this template use File | Settings | File Templates.
  */
+@Ignore
 public class TestLevelDBStorage {
     private static Logger logger = Logger.getLogger(TestLevelDBStorage.class.getName());
 
@@ -81,10 +82,10 @@ public class TestLevelDBStorage {
 
     @Test
     public void testStoringMetricHour() {
-        //DateTime fromDate = new DateTime(2012, 04, 18, 9, 0, 0);
-        //DateTime toDate = new DateTime(2012, 04, 18, 12, 0, 0);
-        DateTime fromDate = new DateTime(2010, 01, 01, 0, 0, 0);
-        DateTime toDate = new DateTime(2010, 12, 31, 23, 59, 59);
+        DateTime fromDate = new DateTime(2012, 04, 18, 9, 0, 0);
+        DateTime toDate = new DateTime(2012, 04, 18, 12, 0, 0);
+        //DateTime fromDate = new DateTime(2010, 01, 01, 0, 0, 0);
+        //DateTime toDate = new DateTime(2010, 12, 31, 23, 59, 59);
 
         Long from15SecPeriod = fromDate.getMillis() / 15000;
         Long to15SecPeriod = toDate.getMillis() / 15000;
@@ -115,7 +116,7 @@ public class TestLevelDBStorage {
         System.out.println("Stored " + index + " values in the database");
 
         int expectedNumMetrics = (4 * 60 * 3) + 1; //3 hours worth of metrics
-        expectedNumMetrics = (4 * 60 * 24 * 365); //31 days worth of metrics
+        //expectedNumMetrics = (4 * 60 * 24 * 365); //31 days worth of metrics
         List<LiveStatistics> statList = newEnv.getLiveStatissticsDao().getLiveStatistics("Test:A", "ACCOUNT NAME", from15SecPeriod, to15SecPeriod);
 
         Assert.assertEquals("Expecting " + expectedNumMetrics + " LiveStatistcs back from DB", expectedNumMetrics, statList.size());
