@@ -23,7 +23,6 @@
     </dependencies>
 	<modules>
 		<module>Montric.RiakPlugin</module>
-		<module>Montric.LevelDBPlugin</module>
 		<module>Montric.NexmoPlugin</module>
 		<module>Montric.AggregateLiveStatisticsPlugin</module>
 		<module>Montric.LiveStatisticsCounterPlugin</module>
