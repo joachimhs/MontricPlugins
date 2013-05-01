@@ -15,6 +15,7 @@ import org.eurekaj.api.datatypes.basic.BasicEmailRecipientGroup;
 import org.eurekaj.api.datatypes.basic.BasicGroupedStatistics;
 import org.eurekaj.api.datatypes.basic.BasicStatistics;
 import org.eurekaj.api.datatypes.basic.BasicTriggeredAlert;
+import org.eurekaj.api.datatypes.basic.BasicUser;
 import org.eurekaj.api.enumtypes.AlertStatus;
 import org.eurekaj.api.enumtypes.AlertType;
 import org.eurekaj.api.enumtypes.UnitType;
@@ -313,10 +314,10 @@ public class TestLevelDBStorage {
     }
     
     @Test
-    public void testUser() {
-    	newEnv.getAccountDao().persistUser("joachimhs", "Account Name", "Admin");
-    	newEnv.getAccountDao().persistUser("joachimhs", "Account Name Two", "Admin");
-    	newEnv.getAccountDao().persistUser("brandnewuser", "Account Name", "User");
+    public void testUser() {    	
+    	newEnv.getAccountDao().persistUser(new BasicUser("joachimhs", "Account name", "Admin", null, null, null, null, null, null));
+    	newEnv.getAccountDao().persistUser(new BasicUser("joachimhs", "Account name Two", "Admin", null, null, null, null, null, null));
+    	newEnv.getAccountDao().persistUser(new BasicUser("brandnewuser", "Account name", "Admin", null, null, null, null, null, null));
     	
     	User userOne = newEnv.getAccountDao().getUser("joachimhs", "Account Name");
     	User userTwo = newEnv.getAccountDao().getUser("joachimhs", "Account Name Two");
