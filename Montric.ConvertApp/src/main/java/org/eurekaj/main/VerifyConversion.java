@@ -22,8 +22,8 @@ public class VerifyConversion {
 		String oldDBPath = args[0];
 		String newDBPath = args[1];
 		
-		System.setProperty("eurekaj.db.type", "CassandraPlugin");
-		System.setProperty("eurekaj.db.absPath", newDBPath);
+		System.setProperty("montric.db.type", "CassandraPlugin");
+		System.setProperty("montric.db.absPath", newDBPath);
 		
 		System.out.println("Setting up the new dev");
 		//BerkeleyDbEnv newEnv = new BerkeleyDbEnv();
@@ -41,8 +41,8 @@ public class VerifyConversion {
 		
 		System.out.println("----------------");
 		
-		System.setProperty("eurekaj.db.type", "Berkeley");
-		System.setProperty("eurekaj.db.absPath", oldDBPath);
+		System.setProperty("montric.db.type", "Berkeley");
+		System.setProperty("montric.db.absPath", oldDBPath);
 		
 		System.out.println("Setting up the old dev");
 		org.eurekaj.berkeley.db.BerkeleyDbEnv oldEnv = new org.eurekaj.berkeley.db.BerkeleyDbEnv();

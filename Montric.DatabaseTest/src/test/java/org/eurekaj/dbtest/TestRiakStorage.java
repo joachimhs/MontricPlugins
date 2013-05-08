@@ -59,8 +59,8 @@ public class TestRiakStorage {
     @Before
     public void setup() {
         newEnv = new RiakEnv();
-        /*System.setProperty("eurekaj.db.type", "BerkeleyHour");
-        System.setProperty("eurekaj.db.absPath", "/srv/eurekaj/eurekajDataTest");
+        /*System.setProperty("montric.db.type", "BerkeleyHour");
+        System.setProperty("montric.db.absPath", "/srv/eurekaj/eurekajDataTest");
         newEnv = new BerkeleyDbEnv();*/
         //newEnv.setPort(9171);
 		newEnv.setup();

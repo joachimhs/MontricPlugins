@@ -22,7 +22,6 @@
         </dependency>
     </dependencies>
 	<modules>
-		<module>Montric.RiakPlugin</module>
 		<module>Montric.NexmoPlugin</module>
 		<module>Montric.AggregateLiveStatisticsPlugin</module>
 		<module>Montric.LiveStatisticsCounterPlugin</module>
