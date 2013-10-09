@@ -1,5 +1,6 @@
 package org.eurekaj.alert.nexmo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -80,7 +81,7 @@ public class TestNexmo {
 			}
 		};
 		
-		executor.getAlertService().sendAlert(nexmoProperties, alert, AlertStatus.NORMAL, 95d, "19/11/2011 12:18:00");
+		executor.getAlertService().sendAlert(new ArrayList<String>(), alert, AlertStatus.NORMAL, 95d, "19/11/2011 12:18:00");
 		
 		try {
 			Thread.sleep(1000);

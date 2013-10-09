@@ -23,7 +23,6 @@
     </dependencies>
 	<modules>
 		<module>Montric.NexmoPlugin</module>
-		<module>Montric.AggregateLiveStatisticsPlugin</module>
 		<module>Montric.LiveStatisticsCounterPlugin</module>
 		<!--module>Montric.DatabaseTest</module-->
     </modules>

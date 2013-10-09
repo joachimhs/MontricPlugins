@@ -10,9 +10,9 @@ public class AlertNexmoData {
 	private String from;
 	private List<String> recipientList;
 
-	public AlertNexmoData(Properties nexmoProperties) {
+	public AlertNexmoData() {
 		super();
-		this.username = nexmoProperties
+		/*this.username = nexmoProperties
 				.getProperty("org.eurekaj.plugin.alert.nexmoPlugin.username");
 		this.password = nexmoProperties
 				.getProperty("org.eurekaj.plugin.alert.nexmoPlugin.password");
@@ -21,12 +21,12 @@ public class AlertNexmoData {
 
 		String toString = nexmoProperties
 				.getProperty("org.eurekaj.plugin.alert.nexmoPlugin.to");
-
+		 
 		String[] tos = toString.split(",");
 		this.recipientList = new ArrayList<String>();
 		for (String to : tos) {
 			recipientList.add(to);
-		}
+		}*/
 	}
 
 	public String getUsername() {
